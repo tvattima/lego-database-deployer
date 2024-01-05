@@ -1,0 +1,620 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1.0.0:Lego Database 2.0 Initialization
+      author: tvattima
+      changes:
+        - sql:
+            dbms: 'mysql'
+            sql: |
+              -- MySQL Workbench Forward Engineering
+              
+              SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
+              SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
+              SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
+              
+              -- -----------------------------------------------------
+              -- Schema a925261_lego_dev
+              -- -----------------------------------------------------
+              
+              -- -----------------------------------------------------
+              -- Table `category`
+              -- -----------------------------------------------------
+              DROP TABLE IF EXISTS `category` ;
+              
+              CREATE TABLE IF NOT EXISTS `category` (
+              `category_id` INT NOT NULL,
+              `category_type` CHAR(1) NOT NULL,
+              `category_name` VARCHAR(50) NOT NULL,
+              PRIMARY KEY (`category_id`))
+              ENGINE = InnoDB
+              DEFAULT CHARACTER SET = utf8
+              COLLATE = utf8_unicode_ci;
+              
+              
+              -- -----------------------------------------------------
+              -- Table `item`
+              -- -----------------------------------------------------
+              DROP TABLE IF EXISTS `item` ;
+              
+              CREATE TABLE IF NOT EXISTS `item` (
+              `item_id` INT(11) NOT NULL AUTO_INCREMENT,
+              `item_number` VARCHAR(20) NULL,
+              `item_name` VARCHAR(100) NOT NULL,
+              `notes` TINYTEXT NULL DEFAULT NULL,
+              `category_id` INT NOT NULL,
+              UNIQUE INDEX `item_id` (`item_id` ASC),
+              PRIMARY KEY (`item_id`),
+              UNIQUE INDEX `item_number_UNIQUE` (`item_number` ASC),
+              INDEX `fk_item_category1_idx` (`category_id` ASC),
+              CONSTRAINT `fk_item_category1`
+              FOREIGN KEY (`category_id`)
+              REFERENCES `category` (`category_id`)
+              ON DELETE NO ACTION
+              ON UPDATE NO ACTION)
+              ENGINE = InnoDB
+              AUTO_INCREMENT = 1325
+              DEFAULT CHARACTER SET = utf8
+              COLLATE = utf8_unicode_ci;
+              
+              
+              -- -----------------------------------------------------
+              -- Table `condition`
+              -- -----------------------------------------------------
+              DROP TABLE IF EXISTS `condition` ;
+              
+              CREATE TABLE IF NOT EXISTS `condition` (
+              `condition_id` INT(11) NOT NULL,
+              `condition_code` VARCHAR(5) NOT NULL,
+              `condition_description` VARCHAR(50) NOT NULL,
+              `condition_text` TINYTEXT NULL DEFAULT NULL,
+              PRIMARY KEY (`condition_id`))
+              ENGINE = InnoDB
+              DEFAULT CHARACTER SET = utf8
+              COLLATE = utf8_unicode_ci;
+              
+              
+              -- -----------------------------------------------------
+              -- Table `item_inventory`
+              -- -----------------------------------------------------
+              DROP TABLE IF EXISTS `item_inventory` ;
+              
+              CREATE TABLE IF NOT EXISTS `item_inventory` (
+              `item_inventory_id` INT(11) NOT NULL AUTO_INCREMENT,
+              `item_id` INT(11) NOT NULL,
+              `box_id` INT NOT NULL,
+              `box_name` VARCHAR(45) NOT NULL,
+              `item_number` VARCHAR(15) NOT NULL,
+              `sealed` TINYINT(1) NOT NULL,
+              `quantity` INT NOT NULL,
+              `description` TEXT NULL,
+              `active` TINYINT(1) NOT NULL,
+              `move_to_box_id` INT NULL,
+              `item_condition_id` INT(11) NULL,
+              `instructions_condition_id` INT(11) NULL,
+              PRIMARY KEY (`item_inventory_id`),
+              UNIQUE INDEX `item_inventory_id_UNIQUE` (`item_inventory_id` ASC),
+              INDEX `fk_item_inventory_item1_idx` (`item_id` ASC),
+              INDEX `fk_item_inventory_condition1_idx` (`item_condition_id` ASC),
+              INDEX `fk_item_inventory_condition2_idx` (`instructions_condition_id` ASC),
+              CONSTRAINT `fk_item_inventory_item1`
+              FOREIGN KEY (`item_id`)
+              REFERENCES `item` (`item_id`)
+              ON DELETE NO ACTION
+              ON UPDATE NO ACTION,
+              CONSTRAINT `fk_item_inventory_condition1`
+              FOREIGN KEY (`item_condition_id`)
+              REFERENCES `condition` (`condition_id`)
+              ON DELETE NO ACTION
+              ON UPDATE NO ACTION,
+              CONSTRAINT `fk_item_inventory_condition2`
+              FOREIGN KEY (`instructions_condition_id`)
+              REFERENCES `condition` (`condition_id`)
+              ON DELETE NO ACTION
+              ON UPDATE NO ACTION)
+              ENGINE = InnoDB;
+              
+              
+              -- -----------------------------------------------------
+              -- Table `bricklink_inventory`
+              -- -----------------------------------------------------
+              DROP TABLE IF EXISTS `bricklink_inventory` ;
+              
+              CREATE TABLE IF NOT EXISTS `bricklink_inventory` (
+              `bl_inventory_id` INT(11) NOT NULL AUTO_INCREMENT,
+              `uuid` CHAR(32) NOT NULL,
+              `item_inventory_id` INT(11) NOT NULL,
+              `bl_item_number` VARCHAR(10) NOT NULL,
+              `inventory_id` INT(11) NULL DEFAULT NULL,
+              `item_type` VARCHAR(20) NOT NULL,
+              `color_id` SMALLINT(6) NULL DEFAULT NULL,
+              `color_name` VARCHAR(50) NULL DEFAULT NULL,
+              `quantity` SMALLINT(6) NOT NULL,
+              `new_or_used` VARCHAR(1) NOT NULL,
+              `completeness` VARCHAR(1) NOT NULL,
+              `unit_price` DECIMAL(7,2) NOT NULL,
+              `bind_id` INT(11) NULL DEFAULT NULL,
+              `description` VARCHAR(1024) NULL DEFAULT NULL,
+              `remarks` VARCHAR(1024) NULL DEFAULT NULL,
+              `bulk` SMALLINT(6) NULL DEFAULT NULL,
+              `is_retain` TINYINT(1) NOT NULL,
+              `is_stock_room` TINYINT(1) NOT NULL,
+              `stock_room_id` VARCHAR(1) NOT NULL,
+              `date_created` DATETIME NULL DEFAULT NULL,
+              `my_cost` DECIMAL(7,2) NULL DEFAULT NULL,
+              `sale_rate` TINYINT(4) NULL DEFAULT NULL,
+              `tier_quantity1` SMALLINT(6) NULL DEFAULT NULL,
+              `tier_quantity2` SMALLINT(6) NULL DEFAULT NULL,
+              `tier_quantity3` SMALLINT(6) NULL DEFAULT NULL,
+              `tier_price1` DECIMAL(7,2) NULL DEFAULT NULL,
+              `tier_price2` DECIMAL(7,2) NULL DEFAULT NULL,
+              `tier_price3` DECIMAL(7,2) NULL DEFAULT NULL,
+              `my_weight` DECIMAL(5,2) NULL DEFAULT NULL,
+              `sealed` TINYINT(1) NOT NULL,
+              `order_id` VARCHAR(11) NULL DEFAULT NULL,
+              `fixed_price` TINYINT(1) NULL DEFAULT NULL,
+              `for_sale` TINYINT(1) NULL DEFAULT NULL,
+              `built_once` TINYINT(1) NULL DEFAULT NULL,
+              `box_condition_id` INT(11) NULL DEFAULT NULL,
+              `instructions_condition_id` INT(11) NULL DEFAULT NULL,
+              `internal_comments` VARCHAR(1024) NULL DEFAULT NULL,
+              `update_timestamp` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+              `last_synchronized_timestamp` DATETIME NULL DEFAULT NULL,
+              `extended_description` VARCHAR(1024) NULL DEFAULT NULL,
+              `extra_description` VARCHAR(1024) NULL DEFAULT NULL,
+              PRIMARY KEY (`bl_inventory_id`, `item_inventory_id`),
+              UNIQUE INDEX `uuid` (`uuid` ASC),
+              INDEX `bl_item_index_1` (`bl_item_number` ASC),
+              INDEX `box_condition_id_fk_1` (`box_condition_id` ASC),
+              INDEX `instructions_condition_id_fk_1` (`instructions_condition_id` ASC),
+              INDEX `fk_bricklink_inventory_item_inventory1_idx` (`item_inventory_id` ASC),
+              CONSTRAINT `fk_bricklink_inventory_item_inventory1`
+              FOREIGN KEY (`item_inventory_id`)
+              REFERENCES `item_inventory` (`item_inventory_id`)
+              ON DELETE NO ACTION
+              ON UPDATE NO ACTION)
+              ENGINE = InnoDB
+              AUTO_INCREMENT = 936
+              DEFAULT CHARACTER SET = utf8
+              COLLATE = utf8_unicode_ci;
+              
+              
+              -- -----------------------------------------------------
+              -- Table `external_service_type`
+              -- -----------------------------------------------------
+              DROP TABLE IF EXISTS `external_service_type` ;
+              
+              CREATE TABLE IF NOT EXISTS `external_service_type` (
+              `external_service_type_id` INT NOT NULL,
+              `external_service_type_name` VARCHAR(20) NOT NULL,
+              `external_service_type_description` VARCHAR(100) NULL DEFAULT NULL,
+              PRIMARY KEY (`external_service_type_id`))
+              ENGINE = InnoDB;
+              
+              
+              -- -----------------------------------------------------
+              -- Table `external_service`
+              -- -----------------------------------------------------
+              DROP TABLE IF EXISTS `external_service` ;
+              
+              CREATE TABLE IF NOT EXISTS `external_service` (
+              `id` INT(11) NOT NULL,
+              `name` VARCHAR(50) NOT NULL,
+              `url` VARCHAR(500) NULL,
+              `external_service_type_id` INT NOT NULL,
+              PRIMARY KEY (`id`),
+              INDEX `fk_external_service_external_service_type1_idx` (`external_service_type_id` ASC),
+              CONSTRAINT `fk_external_service_external_service_type1`
+              FOREIGN KEY (`external_service_type_id`)
+              REFERENCES `external_service_type` (`external_service_type_id`)
+              ON DELETE NO ACTION
+              ON UPDATE NO ACTION)
+              ENGINE = InnoDB;
+              
+              
+              -- -----------------------------------------------------
+              -- Table `external_item`
+              -- -----------------------------------------------------
+              DROP TABLE IF EXISTS `external_item` ;
+              
+              CREATE TABLE IF NOT EXISTS `external_item` (
+              `external_item_id` INT(11) NOT NULL AUTO_INCREMENT,
+              `external_number` VARCHAR(25) NOT NULL,
+              `external_unique_id` INT(11) NOT NULL,
+              `external_name` VARCHAR(250) NOT NULL,
+              `external_url` VARCHAR(300) NULL,
+              `external_service_id` INT(11) NOT NULL,
+              PRIMARY KEY (`external_item_id`),
+              INDEX `fk_external_item_external_service1_idx` (`external_service_id` ASC),
+              CONSTRAINT `fk_external_item_external_service1`
+              FOREIGN KEY (`external_service_id`)
+              REFERENCES `external_service` (`id`)
+              ON DELETE NO ACTION
+              ON UPDATE NO ACTION)
+              ENGINE = InnoDB;
+              
+              
+              -- -----------------------------------------------------
+              -- Table `bricklink_sale_item`
+              -- -----------------------------------------------------
+              DROP TABLE IF EXISTS `bricklink_sale_item` ;
+              
+              CREATE TABLE IF NOT EXISTS `bricklink_sale_item` (
+              `bl_sale_item_id` INT(11) NOT NULL AUTO_INCREMENT,
+              `bl_item_id` INT(11) NOT NULL,
+              `inventory_id` INT(11) NOT NULL,
+              `description` VARCHAR(2048) NULL DEFAULT NULL,
+              `new_or_used` VARCHAR(1) NOT NULL,
+              `completeness` VARCHAR(1) NOT NULL,
+              `quantity` SMALLINT(6) NOT NULL,
+              `has_extended_description` TINYINT(1) NOT NULL,
+              `unit_price` DECIMAL(7,2) NOT NULL,
+              `country_code` VARCHAR(2) NOT NULL DEFAULT 'ZZ',
+              `date_created` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+              `status` VARCHAR(1) NOT NULL DEFAULT 'C',
+              PRIMARY KEY (`bl_sale_item_id`),
+              UNIQUE INDEX `inventory_id` (`inventory_id` ASC),
+              UNIQUE INDEX `bl_inventory_id_index_1` (`inventory_id` ASC),
+              INDEX `fk_bricklink_sale_item_external_item1_idx` (`bl_item_id` ASC),
+              CONSTRAINT `fk_bricklink_sale_item_external_item1`
+              FOREIGN KEY (`bl_item_id`)
+              REFERENCES `external_item` (`external_item_id`)
+              ON DELETE NO ACTION
+              ON UPDATE NO ACTION)
+              ENGINE = InnoDB
+              AUTO_INCREMENT = 58644
+              DEFAULT CHARACTER SET = utf8
+              COLLATE = utf8_unicode_ci;
+              
+              
+              -- -----------------------------------------------------
+              -- Table `inventory_index`
+              -- -----------------------------------------------------
+              DROP TABLE IF EXISTS `inventory_index` ;
+              
+              CREATE TABLE IF NOT EXISTS `inventory_index` (
+              `box_id` INT(11) NOT NULL DEFAULT '0',
+              `box_index` INT(11) NOT NULL DEFAULT '0',
+              `item_number` VARCHAR(15) NOT NULL,
+              `box_name` VARCHAR(20) NULL DEFAULT NULL,
+              `box_number` VARCHAR(10) NOT NULL,
+              `sealed` VARCHAR(5) NULL DEFAULT NULL,
+              `quantity` INT(11) NULL DEFAULT NULL,
+              `description` TEXT NULL DEFAULT NULL,
+              `active` TINYINT(1) NULL DEFAULT '1',
+              `moved_to_box_id` INT(11) NULL DEFAULT NULL,
+              PRIMARY KEY (`box_id`, `box_index`),
+              INDEX `inventory_index__index_1` (`box_id` ASC, `box_index` ASC))
+              ENGINE = InnoDB
+              DEFAULT CHARACTER SET = utf8
+              COLLATE = utf8_unicode_ci;
+              
+              
+              -- -----------------------------------------------------
+              -- Table `party`
+              -- -----------------------------------------------------
+              DROP TABLE IF EXISTS `party` ;
+              
+              CREATE TABLE IF NOT EXISTS `party` (
+              `party_id` INT(11) NOT NULL AUTO_INCREMENT,
+              `party_first_name` VARCHAR(50) NULL DEFAULT NULL,
+              `party_middle_initial` CHAR(1) NULL DEFAULT NULL,
+              `party_last_name` VARCHAR(50) NULL DEFAULT NULL,
+              `party_address1` VARCHAR(50) NULL DEFAULT NULL,
+              `party_address2` VARCHAR(50) NULL DEFAULT NULL,
+              `party_city` VARCHAR(50) NULL DEFAULT NULL,
+              `party_state` VARCHAR(50) NULL DEFAULT NULL,
+              `party_postal_code` VARCHAR(50) NULL DEFAULT NULL,
+              `party_country_code` VARCHAR(50) NULL DEFAULT NULL,
+              `party_country` VARCHAR(50) NULL DEFAULT NULL,
+              `party_phone` VARCHAR(50) NULL DEFAULT NULL,
+              `party_email` VARCHAR(50) NULL DEFAULT NULL,
+              `party_type` VARCHAR(50) NULL DEFAULT NULL,
+              `party_password` VARCHAR(50) NULL DEFAULT NULL,
+              `party_activation_date` DATE NULL DEFAULT NULL,
+              `party_active_indicator` CHAR(1) NULL DEFAULT NULL,
+              UNIQUE INDEX `party_id` (`party_id` ASC),
+              PRIMARY KEY (`party_id`))
+              ENGINE = InnoDB
+              DEFAULT CHARACTER SET = utf8
+              COLLATE = utf8_unicode_ci;
+              
+              
+              -- -----------------------------------------------------
+              -- Table `transaction_platform`
+              -- -----------------------------------------------------
+              DROP TABLE IF EXISTS `transaction_platform` ;
+              
+              CREATE TABLE IF NOT EXISTS `transaction_platform` (
+              `transaction_platform_code` VARCHAR(20) NOT NULL,
+              `transaction_platform_name` VARCHAR(100) NOT NULL,
+              PRIMARY KEY (`transaction_platform_code`))
+              ENGINE = InnoDB;
+              
+              
+              -- -----------------------------------------------------
+              -- Table `transactions`
+              -- -----------------------------------------------------
+              DROP TABLE IF EXISTS `transactions` ;
+              
+              CREATE TABLE IF NOT EXISTS `transactions` (
+              `transaction_id` INT(11) NOT NULL AUTO_INCREMENT,
+              `transaction_date` DATE NULL DEFAULT NULL,
+              `notes` TINYTEXT NULL DEFAULT NULL,
+              `from_party_id` INT(11) NOT NULL,
+              `to_party_id` INT(11) NOT NULL,
+              `transaction_platform_code` VARCHAR(20) NOT NULL,
+              PRIMARY KEY (`transaction_id`),
+              UNIQUE INDEX `transactions_transaction_id_uindex` (`transaction_id` ASC),
+              INDEX `fk_transactions_party1_idx` (`from_party_id` ASC),
+              INDEX `fk_transactions_party2_idx` (`to_party_id` ASC),
+              INDEX `fk_transactions_transaction_platform1_idx` (`transaction_platform_code` ASC),
+              CONSTRAINT `fk_transactions_party1`
+              FOREIGN KEY (`from_party_id`)
+              REFERENCES `party` (`party_id`)
+              ON DELETE NO ACTION
+              ON UPDATE NO ACTION,
+              CONSTRAINT `fk_transactions_party2`
+              FOREIGN KEY (`to_party_id`)
+              REFERENCES `party` (`party_id`)
+              ON DELETE NO ACTION
+              ON UPDATE NO ACTION,
+              CONSTRAINT `fk_transactions_transaction_platform1`
+              FOREIGN KEY (`transaction_platform_code`)
+              REFERENCES `transaction_platform` (`transaction_platform_code`)
+              ON DELETE NO ACTION
+              ON UPDATE NO ACTION)
+              ENGINE = InnoDB
+              AUTO_INCREMENT = 447
+              DEFAULT CHARACTER SET = utf8
+              COLLATE = utf8_unicode_ci;
+              
+              
+              -- -----------------------------------------------------
+              -- Table `transaction_type`
+              -- -----------------------------------------------------
+              DROP TABLE IF EXISTS `transaction_type` ;
+              
+              CREATE TABLE IF NOT EXISTS `transaction_type` (
+              `transaction_type_code` VARCHAR(5) NOT NULL,
+              `transaction_type_description` VARCHAR(50) NOT NULL,
+              `conversion_factor` INT(11) NULL DEFAULT NULL,
+              PRIMARY KEY (`transaction_type_code`))
+              ENGINE = InnoDB
+              DEFAULT CHARACTER SET = utf8
+              COLLATE = utf8_unicode_ci
+              COMMENT = 'Auction Purchase\nBuilt from Loose Pieces\nFind\nGift\nPurchase\nRemoved\nSale\nTrade Give\nTrade Receive\nYard Sale/Flea Market Purchase';
+              
+              
+              -- -----------------------------------------------------
+              -- Table `transaction_item`
+              -- -----------------------------------------------------
+              DROP TABLE IF EXISTS `transaction_item` ;
+              
+              CREATE TABLE IF NOT EXISTS `transaction_item` (
+              `item_transaction_id` INT(11) NOT NULL AUTO_INCREMENT,
+              `transaction_id` INT(11) NOT NULL,
+              `transaction_type_code` VARCHAR(5) NOT NULL,
+              `item_id` INT(11) NOT NULL,
+              `notes` TINYTEXT NULL DEFAULT NULL,
+              PRIMARY KEY (`item_transaction_id`),
+              UNIQUE INDEX `transaction_item_item_transaction_id_uindex` (`item_transaction_id` ASC),
+              INDEX `fk_transaction_item_transactions1_idx` (`transaction_id` ASC),
+              INDEX `fk_transaction_item_item1_idx` (`item_id` ASC),
+              INDEX `fk_transaction_item_transaction_type1_idx` (`transaction_type_code` ASC),
+              CONSTRAINT `fk_transaction_item_transactions1`
+              FOREIGN KEY (`transaction_id`)
+              REFERENCES `transactions` (`transaction_id`)
+              ON DELETE NO ACTION
+              ON UPDATE NO ACTION,
+              CONSTRAINT `fk_transaction_item_item1`
+              FOREIGN KEY (`item_id`)
+              REFERENCES `item` (`item_id`)
+              ON DELETE NO ACTION
+              ON UPDATE NO ACTION,
+              CONSTRAINT `fk_transaction_item_transaction_type1`
+              FOREIGN KEY (`transaction_type_code`)
+              REFERENCES `transaction_type` (`transaction_type_code`)
+              ON DELETE NO ACTION
+              ON UPDATE NO ACTION)
+              ENGINE = InnoDB
+              AUTO_INCREMENT = 2107
+              DEFAULT CHARACTER SET = utf8
+              COLLATE = utf8_unicode_ci;
+              
+              
+              -- -----------------------------------------------------
+              -- Table `cost_type`
+              -- -----------------------------------------------------
+              DROP TABLE IF EXISTS `cost_type` ;
+              
+              CREATE TABLE IF NOT EXISTS `cost_type` (
+              `cost_type_code` VARCHAR(10) NOT NULL,
+              `cost_type_name` VARCHAR(45) NOT NULL,
+              `cost_type_description` VARCHAR(300) NULL,
+              PRIMARY KEY (`cost_type_code`))
+              ENGINE = InnoDB
+              COMMENT = 'Various Cost Types: Transaction Item Price, Transaction Fee, Shipping, Tax, etc.';
+              
+              
+              -- -----------------------------------------------------
+              -- Table `transaction_cost`
+              -- -----------------------------------------------------
+              DROP TABLE IF EXISTS `transaction_cost` ;
+              
+              CREATE TABLE IF NOT EXISTS `transaction_cost` (
+              `transaction_cost_id` INT NOT NULL AUTO_INCREMENT,
+              `transaction_id` INT(11) NOT NULL,
+              `cost_type_code` VARCHAR(10) NOT NULL,
+              `amount` DECIMAL(12,4) NOT NULL,
+              PRIMARY KEY (`transaction_cost_id`),
+              INDEX `fk_transaction_cost_cost_type1_idx` (`cost_type_code` ASC),
+              INDEX `fk_transaction_cost_transactions1_idx` (`transaction_id` ASC),
+              CONSTRAINT `fk_transaction_cost_cost_type1`
+              FOREIGN KEY (`cost_type_code`)
+              REFERENCES `cost_type` (`cost_type_code`)
+              ON DELETE NO ACTION
+              ON UPDATE NO ACTION,
+              CONSTRAINT `fk_transaction_cost_transactions1`
+              FOREIGN KEY (`transaction_id`)
+              REFERENCES `transactions` (`transaction_id`)
+              ON DELETE NO ACTION
+              ON UPDATE NO ACTION)
+              ENGINE = InnoDB
+              COMMENT = 'Overall Transaction level Costs: Transaction Fee, Shipping, Tax.';
+              
+              
+              -- -----------------------------------------------------
+              -- Table `transaction_item_cost`
+              -- -----------------------------------------------------
+              DROP TABLE IF EXISTS `transaction_item_cost` ;
+              
+              CREATE TABLE IF NOT EXISTS `transaction_item_cost` (
+              `transaction_item_cost_id` INT NOT NULL AUTO_INCREMENT,
+              `item_transaction_id` INT(11) NOT NULL,
+              `cost_type_code` VARCHAR(10) NOT NULL,
+              `amount` DECIMAL(12,4) NOT NULL,
+              PRIMARY KEY (`transaction_item_cost_id`),
+              INDEX `fk_transaction_item_cost_cost_type1_idx` (`cost_type_code` ASC),
+              INDEX `fk_transaction_item_cost_transaction_item1_idx` (`item_transaction_id` ASC),
+              CONSTRAINT `fk_transaction_item_cost_cost_type1`
+              FOREIGN KEY (`cost_type_code`)
+              REFERENCES `cost_type` (`cost_type_code`)
+              ON DELETE NO ACTION
+              ON UPDATE NO ACTION,
+              CONSTRAINT `fk_transaction_item_cost_transaction_item1`
+              FOREIGN KEY (`item_transaction_id`)
+              REFERENCES `transaction_item` (`item_transaction_id`)
+              ON DELETE NO ACTION
+              ON UPDATE NO ACTION)
+              ENGINE = InnoDB
+              COMMENT = 'Individual Transaction Item Costs: Item Price, Transaction Fee, Shipping, Tax';
+              
+              
+              -- -----------------------------------------------------
+              -- Table `payment`
+              -- -----------------------------------------------------
+              DROP TABLE IF EXISTS `payment` ;
+              
+              CREATE TABLE IF NOT EXISTS `payment` (
+              `payment_id` INT NOT NULL AUTO_INCREMENT,
+              `payment_date` DATE NOT NULL,
+              `transaction_id` INT(11) NOT NULL,
+              `purchaser_currency_code` VARCHAR(5) NOT NULL,
+              `seller_currency_code` VARCHAR(5) NOT NULL,
+              `exchange_rate` DECIMAL(12,5) NOT NULL,
+              PRIMARY KEY (`payment_id`),
+              INDEX `fk_payment_transactions1_idx` (`transaction_id` ASC),
+              CONSTRAINT `fk_payment_transactions1`
+              FOREIGN KEY (`transaction_id`)
+              REFERENCES `transactions` (`transaction_id`)
+              ON DELETE NO ACTION
+              ON UPDATE NO ACTION)
+              ENGINE = InnoDB;
+              
+              
+              -- -----------------------------------------------------
+              -- Table `carrier`
+              -- -----------------------------------------------------
+              DROP TABLE IF EXISTS `carrier` ;
+              
+              CREATE TABLE IF NOT EXISTS `carrier` (
+              `carrier_code` VARCHAR(10) NOT NULL,
+              `carrier_name` VARCHAR(100) NOT NULL,
+              `tracking_url_pattern` VARCHAR(300) NULL,
+              PRIMARY KEY (`carrier_code`))
+              ENGINE = InnoDB;
+              
+              
+              -- -----------------------------------------------------
+              -- Table `shipment`
+              -- -----------------------------------------------------
+              DROP TABLE IF EXISTS `shipment` ;
+              
+              CREATE TABLE IF NOT EXISTS `shipment` (
+              `shipment_id` INT NOT NULL AUTO_INCREMENT,
+              `shipment_date` DATE NOT NULL,
+              `shipment_carrier_code` VARCHAR(10) NOT NULL,
+              `shipment_tracking_number` VARCHAR(45) NULL,
+              `carrier_code` VARCHAR(10) NOT NULL,
+              PRIMARY KEY (`shipment_id`),
+              INDEX `fk_shipment_carrier1_idx` (`carrier_code` ASC),
+              CONSTRAINT `fk_shipment_carrier1`
+              FOREIGN KEY (`carrier_code`)
+              REFERENCES `carrier` (`carrier_code`)
+              ON DELETE NO ACTION
+              ON UPDATE NO ACTION)
+              ENGINE = InnoDB;
+              
+              
+              -- -----------------------------------------------------
+              -- Table `transaction_shipment`
+              -- -----------------------------------------------------
+              DROP TABLE IF EXISTS `transaction_shipment` ;
+              
+              CREATE TABLE IF NOT EXISTS `transaction_shipment` (
+              `transaction_shipment_id` INT NOT NULL AUTO_INCREMENT,
+              `shipment_id` INT NOT NULL,
+              `item_transaction_id` INT(11) NOT NULL,
+              PRIMARY KEY (`transaction_shipment_id`),
+              INDEX `fk_transaction_shipment_shipment1_idx` (`shipment_id` ASC),
+              INDEX `fk_transaction_shipment_transaction_item1_idx` (`item_transaction_id` ASC),
+              CONSTRAINT `fk_transaction_shipment_shipment1`
+              FOREIGN KEY (`shipment_id`)
+              REFERENCES `shipment` (`shipment_id`)
+              ON DELETE NO ACTION
+              ON UPDATE NO ACTION,
+              CONSTRAINT `fk_transaction_shipment_transaction_item1`
+              FOREIGN KEY (`item_transaction_id`)
+              REFERENCES `transaction_item` (`item_transaction_id`)
+              ON DELETE NO ACTION
+              ON UPDATE NO ACTION)
+              ENGINE = InnoDB;
+              
+              
+              -- -----------------------------------------------------
+              -- Table `transaction_item_image`
+              -- -----------------------------------------------------
+              DROP TABLE IF EXISTS `transaction_item_image` ;
+              
+              CREATE TABLE IF NOT EXISTS `transaction_item_image` (
+              `transaction_item_image_id` INT NOT NULL AUTO_INCREMENT,
+              `transaction_item_image_type_code` VARCHAR(10) NOT NULL,
+              `transaction_item_image_url` VARCHAR(300) NULL,
+              `transaction_item_image_blob` VARCHAR(45) NULL,
+              `transaction_item_item_transaction_id` INT(11) NOT NULL,
+              PRIMARY KEY (`transaction_item_image_id`),
+              INDEX `fk_transaction_item_image_transaction_item1_idx` (`transaction_item_item_transaction_id` ASC),
+              CONSTRAINT `fk_transaction_item_image_transaction_item1`
+              FOREIGN KEY (`transaction_item_item_transaction_id`)
+              REFERENCES `transaction_item` (`item_transaction_id`)
+              ON DELETE NO ACTION
+              ON UPDATE NO ACTION)
+              ENGINE = InnoDB;
+              
+              
+              -- -----------------------------------------------------
+              -- Table `external_service_item`
+              -- -----------------------------------------------------
+              DROP TABLE IF EXISTS `external_service_item` ;
+              
+              CREATE TABLE IF NOT EXISTS `external_service_item` (
+              `external_item_id` INT(11) NOT NULL,
+              `item_id` INT(11) NOT NULL,
+              INDEX `fk_external_service_item_external_item1_idx` (`external_item_id` ASC),
+              INDEX `fk_external_service_item_item1_idx` (`item_id` ASC),
+              CONSTRAINT `fk_external_service_item_external_item1`
+              FOREIGN KEY (`external_item_id`)
+              REFERENCES `external_item` (`external_item_id`)
+              ON DELETE NO ACTION
+              ON UPDATE NO ACTION,
+              CONSTRAINT `fk_external_service_item_item1`
+              FOREIGN KEY (`item_id`)
+              REFERENCES `item` (`item_id`)
+              ON DELETE NO ACTION
+              ON UPDATE NO ACTION)
+              ENGINE = InnoDB;
+              
+              
+              SET SQL_MODE=@OLD_SQL_MODE;
+              SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
+              SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;

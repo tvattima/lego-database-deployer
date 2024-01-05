@@ -1,0 +1,54 @@
+spring:
+  jmx:
+    enabled: false
+  application:
+    name: Lego Database DB Deployer
+  datasource:
+    client-config-dir: C:\Users\tvatt\.credentials\site5\database
+    client-config-file: site5-database-configuration.json
+    database-key-name: site5-dev-lego
+    hikari:
+      connection-timeout: 10000
+      idle-timeout: 30000
+      connection-test-query: SELECT 1
+      initialization-fail-timeout: 10000
+      auto-commit: false
+      login-timeout: 10000
+      minimum-idle: 5
+      maximum-pool-size: 5
+      validation-timeout: 10000
+      pool-name: site5-mysql-jdbc-pool
+  main:
+    web-application-type: none
+
+target-database:
+  datasource:
+    client-config-dir: C:\Users\tvatt\.credentials\site5\database
+    client-config-file: site5-database-configuration.json
+    database-key-name: site5-lego-dev
+    hikari:
+      connection-timeout: 10000
+      idle-timeout: 30000
+      connection-test-query: SELECT 1
+      initialization-fail-timeout: 10000
+      auto-commit: false
+      login-timeout: 10000
+      minimum-idle: 5
+      maximum-pool-size: 5
+      validation-timeout: 10000
+      pool-name: site5-mysql-jdbc-pool
+
+logging:
+  level:
+    root: INFO
+    org.mybatis: INFO
+
+postprocessors:
+  groups:
+    migration-1.0-to-2.0:
+      - InitialMigrationPostProcessor
+      - CategoryMigrator
+      - ConditionMigrator
+      - TransactionTypeMigrator
+      - CarrierMigrator
+      - TransactionPlatformMigrator
