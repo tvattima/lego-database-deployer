@@ -52,3 +52,7 @@ postprocessors:
       - TransactionTypeMigrator
       - CarrierMigrator
       - TransactionPlatformMigrator
+      - CostTypeMigrator
+      - PartyMigrator
+      - ExternalServiceTypeMigrator
+      - ExternalServiceMigrator
