@@ -13,21 +13,44 @@
   <version>1.2.0-SNAPSHOT</version>
   <name>Lego :: Database Deployer</name>
   <description>Lego Database DB Deployter</description>
+
   <properties>
     <java.version>17</java.version>
     <bricklink-data.version>1.2.1-SNAPSHOT</bricklink-data.version>
+    <bricklink-rest-feign.version>1.2.0-SNAPSHOT</bricklink-rest-feign.version>
+    <bricklink-html.version>1.2.0-SNAPSHOT</bricklink-html.version>
+    <bricklink-ajax.version>1.2.0-SNAPSHO</bricklink-ajax.version>
   </properties>
+
   <dependencies>
     <dependency>
       <groupId>com.bricklink.data</groupId>
       <artifactId>bricklink-data</artifactId>
       <version>${bricklink-data.version}</version>
     </dependency>
+
+    <dependency>
+      <groupId>com.bricklink.api</groupId>
+      <artifactId>bricklink-rest-feign</artifactId>
+      <version>${bricklink-rest-feign.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.bricklink.api</groupId>
+      <artifactId>bricklink-html</artifactId>
+      <version>${bricklink-html.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.bricklink.api</groupId>
+      <artifactId>bricklink-ajax</artifactId>
+      <version>${bricklink-ajax.version}T</version>
+    </dependency>
+
     <dependency>
       <groupId>org.liquibase</groupId>
       <artifactId>liquibase-core</artifactId>
     </dependency>
-
 
     <dependency>
       <groupId>com.mysql</groupId>

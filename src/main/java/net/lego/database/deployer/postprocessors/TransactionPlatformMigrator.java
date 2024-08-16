@@ -21,7 +21,7 @@ public class TransactionPlatformMigrator implements PostProcessor {
         getInitialTransactionPlatforms()
                 .forEach(tp -> {
                     log.info("TransactionPlatform [{}]", tp);
-                    transactionPlatformDao.findTransactionPlatformByCode(tp.getTransactionPlatformCode())
+                    transactionPlatformDao.findTransactionPlatformById(tp.getTransactionPlatformId())
                                           .ifPresentOrElse(transactionPlatform -> {
                                                       log.info("Updating existing TransactionPlatform [{}] to [{}]", transactionPlatform, tp);
                                                       transactionPlatformDao.update(tp);
@@ -33,21 +33,25 @@ public class TransactionPlatformMigrator implements PostProcessor {
     public List<TransactionPlatform> getInitialTransactionPlatforms() {
         return List.of(
                 TransactionPlatform.builder()
-                                   .transactionPlatformCode("BRICKLINK")
+                                   .transactionPlatformId(1)
                                    .transactionPlatformName("Bricklink")
                                    .build(),
                 TransactionPlatform.builder()
-                                   .transactionPlatformCode("BRICKLINK")
+                                   .transactionPlatformId(2)
                                    .transactionPlatformName("eBay")
                                    .build(),
                 TransactionPlatform.builder()
-                                   .transactionPlatformCode("PRIVATE")
+                                   .transactionPlatformId(3)
                                    .transactionPlatformName("Private")
                                    .build(),
                 TransactionPlatform.builder()
-                                   .transactionPlatformCode("CATAWIKI")
+                                   .transactionPlatformId(4)
                                    .transactionPlatformName("CataWiki")
-                                   .build()
+                                   .build(),
+                TransactionPlatform.builder()
+                        .transactionPlatformId(5)
+                        .transactionPlatformName("Lauritz")
+                        .build()
         );
     }
 }

@@ -4,8 +4,8 @@ spring:
   application:
     name: Lego Database DB Deployer
   datasource:
-    client-config-dir: C:\Users\tvatt\.credentials\site5\database
-    client-config-file: site5-database-configuration.json
+    client-config-dir: C:\Users\tvatt\.credentials\database
+    client-config-file: database-configuration.json
     database-key-name: site5-dev-lego
     hikari:
       connection-timeout: 10000
@@ -14,8 +14,8 @@ spring:
       initialization-fail-timeout: 10000
       auto-commit: false
       login-timeout: 10000
-      minimum-idle: 5
-      maximum-pool-size: 5
+      minimum-idle: 30
+      maximum-pool-size: 30
       validation-timeout: 10000
       pool-name: site5-mysql-jdbc-pool
   main:
@@ -23,9 +23,9 @@ spring:
 
 target-database:
   datasource:
-    client-config-dir: C:\Users\tvatt\.credentials\site5\database
-    client-config-file: site5-database-configuration.json
-    database-key-name: site5-lego-dev
+    client-config-dir: C:\Users\tvatt\.credentials\database
+    client-config-file: database-configuration.json
+    database-key-name: legolandserver1-lego-dev
     hikari:
       connection-timeout: 10000
       idle-timeout: 30000
@@ -35,13 +35,26 @@ target-database:
       login-timeout: 10000
       minimum-idle: 5
       maximum-pool-size: 5
-      validation-timeout: 10000
-      pool-name: site5-mysql-jdbc-pool
+      validation-timeout: 300000
+      pool-name: legolandserver1-mysql-jdbc-pool
+
+bricklink:
+  rest:
+    uri: https://api.bricklink.com/api/store/v1
+    client-config-dir: C:\Users\tvatt\.credentials\bricklink
+    client-config-file: bricklink-client-api-keys.json
+  web:
+    client-config-dir: C:\Users\tvatt\.credentials\bricklink
+    client-config-file: bricklink-web.json
+    pool:
+      default-max-per-route: 20
+      max-per-route: 20
+      max-total: 50
 
 logging:
   level:
     root: INFO
-    org.mybatis: INFO
+    org.apache.http.client.protocol: ERROR
 
 postprocessors:
   groups:
@@ -54,5 +67,11 @@ postprocessors:
       - TransactionPlatformMigrator
       - CostTypeMigrator
       - PartyMigrator
+      - PaymentPlatformMigrator
       - ExternalServiceTypeMigrator
       - ExternalServiceMigrator
+      - InventoryIndexMigrator
+      - ItemMigrator
+      - BricklinkExternalItemMigrator
+      - BricklinkExternalServiceItemMigrator
+      - ItemInventoryMigrator

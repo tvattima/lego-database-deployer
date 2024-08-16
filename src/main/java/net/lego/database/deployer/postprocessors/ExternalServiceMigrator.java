@@ -25,58 +25,70 @@ public class ExternalServiceMigrator implements PostProcessor {
                 .forEach(es -> {
                     log.info("ExternalService [{}]", es);
                     externalServiceDao.findExternalServiceById(es.getExternalServiceId())
-                                      .ifPresentOrElse(externalService -> {
-                                                  log.info("Updating existing ExternalService [{}] to [{}]", externalService, es);
-                                                  externalServiceDao.update(es);
-                                              },
-                                              () -> externalServiceDao.insert(es));
+                            .ifPresentOrElse(externalService -> {
+                                        log.info("Updating existing ExternalService [{}] to [{}]", externalService, es);
+                                        externalServiceDao.update(es);
+                                    },
+                                    () -> externalServiceDao.insert(es));
                 });
     }
 
     public List<ExternalService> getInitialExternalService() {
         return List.of(
                 ExternalService.builder()
-                               .externalServiceId(1)
-                               .externalServiceName("LEGO")
-                               .externalServiceUrl("https://www.lego.com")
-                               .externalServiceTypeId(getExternalServiceTypeId("LEGO"))
-                               .build(),
+                        .externalServiceId(1)
+                        .externalServiceName("LEGO")
+                        .externalServiceUrl("https://www.lego.com")
+                        .externalServiceTypeId(getExternalServiceTypeId("LEGO"))
+                        .build(),
                 ExternalService.builder()
-                               .externalServiceId(2)
-                               .externalServiceName("BRICKLINK")
-                               .externalServiceUrl("https://www.bricklink.com")
-                               .externalServiceTypeId(getExternalServiceTypeId("MARKETPLACE"))
-                               .build(),
+                        .externalServiceId(2)
+                        .externalServiceName("BRICKLINK")
+                        .externalServiceUrl("https://www.bricklink.com")
+                        .externalServiceTypeId(getExternalServiceTypeId("MARKETPLACE"))
+                        .build(),
                 ExternalService.builder()
-                               .externalServiceId(3)
-                               .externalServiceName("EBAY")
-                               .externalServiceUrl("https://www.ebay.com")
-                               .externalServiceTypeId(getExternalServiceTypeId("AUCTION"))
-                               .build(),
+                        .externalServiceId(3)
+                        .externalServiceName("EBAY")
+                        .externalServiceUrl("https://www.ebay.com")
+                        .externalServiceTypeId(getExternalServiceTypeId("AUCTION"))
+                        .build(),
                 ExternalService.builder()
-                               .externalServiceId(4)
-                               .externalServiceName("CATAWIKI")
-                               .externalServiceUrl("https://www.catawiki.com")
-                               .externalServiceTypeId(getExternalServiceTypeId("AUCTION"))
-                               .build(),
+                        .externalServiceId(4)
+                        .externalServiceName("CATAWIKI")
+                        .externalServiceUrl("https://www.catawiki.com")
+                        .externalServiceTypeId(getExternalServiceTypeId("AUCTION"))
+                        .build(),
                 ExternalService.builder()
-                               .externalServiceId(5)
-                               .externalServiceName("LAURITZ")
-                               .externalServiceUrl("https://www.lauritz.com")
-                               .externalServiceTypeId(getExternalServiceTypeId("AUCTION"))
-                               .build(),
+                        .externalServiceId(5)
+                        .externalServiceName("LAURITZ")
+                        .externalServiceUrl("https://www.lauritz.com")
+                        .externalServiceTypeId(getExternalServiceTypeId("AUCTION"))
+                        .build(),
                 ExternalService.builder()
-                               .externalServiceId(6)
-                               .externalServiceName("QXL")
-                               .externalServiceUrl("https://www.qxl.dk")
-                               .externalServiceTypeId(getExternalServiceTypeId("AUCTION"))
-                               .build()
+                        .externalServiceId(6)
+                        .externalServiceName("QXL")
+                        .externalServiceUrl("https://www.qxl.dk")
+                        .externalServiceTypeId(getExternalServiceTypeId("AUCTION"))
+                        .build(),
+                ExternalService.builder()
+                        .externalServiceId(7)
+                        .externalServiceName("PNW Steam Shop")
+                        .externalServiceUrl("https://www.pnwsteamshop.com")
+                        .externalServiceTypeId(getExternalServiceTypeId("THIRDPARTY"))
+                        .build(),
+                ExternalService.builder()
+                        .externalServiceId(8)
+                        .externalServiceName("Brick Model Railroader")
+                        .externalServiceUrl("https://brickmodelrailroader.com")
+                        .externalServiceTypeId(getExternalServiceTypeId("THIRDPARTY"))
+                        .build()
         );
     }
 
     private Integer getExternalServiceTypeId(final String externalServiceTypeName) {
         return externalServiceTypeDao.findExternalServiceTypeByName(externalServiceTypeName)
-                                     .map(ExternalServiceType::getExternalServiceTypeId)
-                                     .orElseThrow(() -> new RuntimeException(String.format("Unable to find unique ExternalServiceType by name [%s]", externalServiceTypeName)));
+                .map(ExternalServiceType::getExternalServiceTypeId)
+                .orElseThrow(() -> new RuntimeException(String.format("Unable to find unique ExternalServiceType by name [%s]", externalServiceTypeName)));
     }
 }

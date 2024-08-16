@@ -47,7 +47,12 @@ public class ExternalServiceTypeMigrator implements PostProcessor {
                                    .externalServiceTypeId(3)
                                    .externalServiceTypeName("AUCTION")
                                    .externalServiceTypeDescription("Auction")
-                                   .build()
+                                   .build(),
+                ExternalServiceType.builder()
+                        .externalServiceTypeId(4)
+                        .externalServiceTypeName("THIRDPARTY")
+                        .externalServiceTypeDescription("Third Party Producer")
+                        .build()
         );
     }
 }

@@ -8,7 +8,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 
 @Slf4j
 @EnableConfigurationProperties
-@SpringBootApplication(scanBasePackages = {"net.bricklink", "net.lego"}, exclude = DataSourceAutoConfiguration.class)
+@SpringBootApplication(scanBasePackages = {"net.bricklink", "net.lego", "com.bricklink.api.rest", "com.bricklink.web", "com.bricklink.api.ajax"}, exclude = DataSourceAutoConfiguration.class)
 public class LegoDatabaseDeployerApplication {
 
 	public static void main(String[] args) {
