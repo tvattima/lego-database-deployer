@@ -4,9 +4,6 @@ spring:
   application:
     name: Lego Database DB Deployer
   datasource:
-    client-config-dir: C:\Users\tvatt\.credentials\database
-    client-config-file: database-configuration.json
-    database-key-name: site5-dev-lego
     hikari:
       connection-timeout: 10000
       idle-timeout: 30000
@@ -17,15 +14,14 @@ spring:
       minimum-idle: 30
       maximum-pool-size: 30
       validation-timeout: 10000
-      pool-name: site5-mysql-jdbc-pool
+      pool-name: source-mysql-jdbc-pool
   main:
     web-application-type: none
+  config:
+    import: file:/dev/config/bricklink/bricklink-client-api-keys.yml, file:/dev/config/bricklink/bricklink-web.yml, file:/dev/config/database/database-configuration.yml
 
 target-database:
   datasource:
-    client-config-dir: C:\Users\tvatt\.credentials\database
-    client-config-file: database-configuration.json
-    database-key-name: legolandserver1-lego-dev
     hikari:
       connection-timeout: 10000
       idle-timeout: 30000
@@ -36,16 +32,12 @@ target-database:
       minimum-idle: 5
       maximum-pool-size: 5
       validation-timeout: 300000
-      pool-name: legolandserver1-mysql-jdbc-pool
+      pool-name: target-mysql-jdbc-pool
 
 bricklink:
   rest:
     uri: https://api.bricklink.com/api/store/v1
-    client-config-dir: C:\Users\tvatt\.credentials\bricklink
-    client-config-file: bricklink-client-api-keys.json
   web:
-    client-config-dir: C:\Users\tvatt\.credentials\bricklink
-    client-config-file: bricklink-web.json
     pool:
       default-max-per-route: 20
       max-per-route: 20
@@ -72,6 +64,8 @@ postprocessors:
       - ExternalServiceMigrator
       - InventoryIndexMigrator
       - ItemMigrator
-      - BricklinkExternalItemMigrator
-      - BricklinkExternalServiceItemMigrator
+#      - BricklinkExternalItemMigrator
+#      - BricklinkExternalServiceItemMigrator
       - ItemInventoryMigrator
+      - ExternalItemInventoryMigrator
+      - BricklinkItemInventoryMigrator

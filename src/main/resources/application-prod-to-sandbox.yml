@@ -1,0 +1,7 @@
+spring:
+  datasource:
+    database-key-name: site5-dev-lego
+
+target-database:
+  datasource:
+    database-key-name: legolandserver1-lego-sandbox

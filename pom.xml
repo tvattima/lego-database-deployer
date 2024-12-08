@@ -16,10 +16,10 @@
 
   <properties>
     <java.version>17</java.version>
-    <bricklink-data.version>1.2.1-SNAPSHOT</bricklink-data.version>
-    <bricklink-rest-feign.version>1.2.0-SNAPSHOT</bricklink-rest-feign.version>
-    <bricklink-html.version>1.2.0-SNAPSHOT</bricklink-html.version>
-    <bricklink-ajax.version>1.2.0-SNAPSHO</bricklink-ajax.version>
+    <bricklink-data.version>1.3.0-SNAPSHOT</bricklink-data.version>
+    <bricklink-rest.version>1.3.0-SNAPSHOT</bricklink-rest.version>
+    <bricklink-html.version>1.3.0-SNAPSHOT</bricklink-html.version>
+    <bricklink-ajax.version>1.3.0-SNAPSHO</bricklink-ajax.version>
   </properties>
 
   <dependencies>
@@ -31,8 +31,8 @@
 
     <dependency>
       <groupId>com.bricklink.api</groupId>
-      <artifactId>bricklink-rest-feign</artifactId>
-      <version>${bricklink-rest-feign.version}</version>
+      <artifactId>bricklink-rest</artifactId>
+      <version>${bricklink-rest.version}</version>
     </dependency>
 
     <dependency>

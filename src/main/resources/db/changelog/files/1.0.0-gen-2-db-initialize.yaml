@@ -16,62 +16,21 @@ databaseChangeLog:
               -- Schema mydb
               -- -----------------------------------------------------
               -- -----------------------------------------------------
-              -- Schema lego_dev
+              -- Schema lego_sandbox
               -- -----------------------------------------------------
               
               -- -----------------------------------------------------
-              -- Schema lego_dev
+              -- Schema lego_sandbox
               -- -----------------------------------------------------
-              CREATE SCHEMA IF NOT EXISTS `lego_dev` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci ;
-              USE `lego_dev` ;
-              
+              CREATE SCHEMA IF NOT EXISTS `lego_sandbox` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci ;
+              USE `lego_sandbox` ;
+
               -- -----------------------------------------------------
-              -- Table `lego_dev`.`DATABASECHANGELOG`
+              -- Table `lego_sandbox`.`bricklink_inventory`
               -- -----------------------------------------------------
-              DROP TABLE IF EXISTS `lego_dev`.`DATABASECHANGELOG` ;
+              DROP TABLE IF EXISTS `lego_sandbox`.`bricklink_inventory` ;
               
-              CREATE TABLE IF NOT EXISTS `lego_dev`.`DATABASECHANGELOG` (
-              `ID` VARCHAR(255) NOT NULL,
-              `AUTHOR` VARCHAR(255) NOT NULL,
-              `FILENAME` VARCHAR(255) NOT NULL,
-              `DATEEXECUTED` DATETIME NOT NULL,
-              `ORDEREXECUTED` INT NOT NULL,
-              `EXECTYPE` VARCHAR(10) NOT NULL,
-              `MD5SUM` VARCHAR(35) NULL DEFAULT NULL,
-              `DESCRIPTION` VARCHAR(255) NULL DEFAULT NULL,
-              `COMMENTS` VARCHAR(255) NULL DEFAULT NULL,
-              `TAG` VARCHAR(255) NULL DEFAULT NULL,
-              `LIQUIBASE` VARCHAR(20) NULL DEFAULT NULL,
-              `CONTEXTS` VARCHAR(255) NULL DEFAULT NULL,
-              `LABELS` VARCHAR(255) NULL DEFAULT NULL,
-              `DEPLOYMENT_ID` VARCHAR(10) NULL DEFAULT NULL)
-              ENGINE = InnoDB
-              DEFAULT CHARACTER SET = utf8mb4
-              COLLATE = utf8mb4_0900_ai_ci;
-              
-              
-              -- -----------------------------------------------------
-              -- Table `lego_dev`.`DATABASECHANGELOGLOCK`
-              -- -----------------------------------------------------
-              DROP TABLE IF EXISTS `lego_dev`.`DATABASECHANGELOGLOCK` ;
-              
-              CREATE TABLE IF NOT EXISTS `lego_dev`.`DATABASECHANGELOGLOCK` (
-              `ID` INT NOT NULL,
-              `LOCKED` TINYINT(1) NOT NULL,
-              `LOCKGRANTED` DATETIME NULL DEFAULT NULL,
-              `LOCKEDBY` VARCHAR(255) NULL DEFAULT NULL,
-              PRIMARY KEY (`ID`))
-              ENGINE = InnoDB
-              DEFAULT CHARACTER SET = utf8mb4
-              COLLATE = utf8mb4_0900_ai_ci;
-              
-              
-              -- -----------------------------------------------------
-              -- Table `lego_dev`.`bricklink_inventory`
-              -- -----------------------------------------------------
-              DROP TABLE IF EXISTS `lego_dev`.`bricklink_inventory` ;
-              
-              CREATE TABLE IF NOT EXISTS `lego_dev`.`bricklink_inventory` (
+              CREATE TABLE IF NOT EXISTS `lego_sandbox`.`bricklink_inventory` (
               `bl_inventory_id` INT NOT NULL AUTO_INCREMENT,
               `uuid` CHAR(32) COLLATE 'utf8mb3_unicode_ci' NOT NULL,
               `bl_item_number` VARCHAR(10) COLLATE 'utf8mb3_unicode_ci' NOT NULL,
@@ -122,11 +81,11 @@ databaseChangeLog:
               
               
               -- -----------------------------------------------------
-              -- Table `lego_dev`.`external_service_type`
+              -- Table `lego_sandbox`.`external_service_type`
               -- -----------------------------------------------------
-              DROP TABLE IF EXISTS `lego_dev`.`external_service_type` ;
+              DROP TABLE IF EXISTS `lego_sandbox`.`external_service_type` ;
               
-              CREATE TABLE IF NOT EXISTS `lego_dev`.`external_service_type` (
+              CREATE TABLE IF NOT EXISTS `lego_sandbox`.`external_service_type` (
               `external_service_type_id` INT NOT NULL,
               `external_service_type_name` VARCHAR(20) COLLATE 'utf8mb3_unicode_ci' NOT NULL,
               `external_service_type_description` VARCHAR(100) COLLATE 'utf8mb3_unicode_ci' NULL DEFAULT NULL,
@@ -135,11 +94,11 @@ databaseChangeLog:
               
               
               -- -----------------------------------------------------
-              -- Table `lego_dev`.`external_service`
+              -- Table `lego_sandbox`.`external_service`
               -- -----------------------------------------------------
-              DROP TABLE IF EXISTS `lego_dev`.`external_service` ;
+              DROP TABLE IF EXISTS `lego_sandbox`.`external_service` ;
               
-              CREATE TABLE IF NOT EXISTS `lego_dev`.`external_service` (
+              CREATE TABLE IF NOT EXISTS `lego_sandbox`.`external_service` (
               `external_service_id` INT NOT NULL,
               `external_service_name` VARCHAR(50) COLLATE 'utf8mb3_unicode_ci' NOT NULL,
               `external_service_url` VARCHAR(500) COLLATE 'utf8mb3_unicode_ci' NULL DEFAULT NULL,
@@ -149,16 +108,16 @@ databaseChangeLog:
               INDEX `fk_external_service_external_service_type1_idx` (`external_service_type_id` ASC) VISIBLE,
               CONSTRAINT `fk_external_service_external_service_type1`
               FOREIGN KEY (`external_service_type_id`)
-              REFERENCES `lego_dev`.`external_service_type` (`external_service_type_id`))
+              REFERENCES `lego_sandbox`.`external_service_type` (`external_service_type_id`))
               ENGINE = InnoDB;
               
               
               -- -----------------------------------------------------
-              -- Table `lego_dev`.`external_item`
+              -- Table `lego_sandbox`.`external_item`
               -- -----------------------------------------------------
-              DROP TABLE IF EXISTS `lego_dev`.`external_item` ;
+              DROP TABLE IF EXISTS `lego_sandbox`.`external_item` ;
               
-              CREATE TABLE IF NOT EXISTS `lego_dev`.`external_item` (
+              CREATE TABLE IF NOT EXISTS `lego_sandbox`.`external_item` (
               `external_item_id` INT NOT NULL AUTO_INCREMENT,
               `external_number` VARCHAR(25) COLLATE 'utf8mb3_unicode_ci' NOT NULL,
               `external_unique_id` INT NOT NULL,
@@ -170,16 +129,16 @@ databaseChangeLog:
               INDEX `fk_external_item_external_service1_idx` (`external_service_id` ASC) VISIBLE,
               CONSTRAINT `fk_external_item_external_service1`
               FOREIGN KEY (`external_service_id`)
-              REFERENCES `lego_dev`.`external_service` (`external_service_id`))
+              REFERENCES `lego_sandbox`.`external_service` (`external_service_id`))
               ENGINE = InnoDB;
               
               
               -- -----------------------------------------------------
-              -- Table `lego_dev`.`bricklink_sale_item`
+              -- Table `lego_sandbox`.`bricklink_sale_item`
               -- -----------------------------------------------------
-              DROP TABLE IF EXISTS `lego_dev`.`bricklink_sale_item` ;
+              DROP TABLE IF EXISTS `lego_sandbox`.`bricklink_sale_item` ;
               
-              CREATE TABLE IF NOT EXISTS `lego_dev`.`bricklink_sale_item` (
+              CREATE TABLE IF NOT EXISTS `lego_sandbox`.`bricklink_sale_item` (
               `bl_sale_item_id` INT NOT NULL AUTO_INCREMENT,
               `inventory_id` INT NOT NULL,
               `description` VARCHAR(2048) COLLATE 'utf8mb3_unicode_ci' NULL DEFAULT NULL,
@@ -198,7 +157,7 @@ databaseChangeLog:
               INDEX `fk_bricklink_sale_item_external_item1_idx` (`external_item_id` ASC) VISIBLE,
               CONSTRAINT `fk_bricklink_sale_item_external_item1`
               FOREIGN KEY (`external_item_id`)
-              REFERENCES `lego_dev`.`external_item` (`external_item_id`)
+              REFERENCES `lego_sandbox`.`external_item` (`external_item_id`)
               ON DELETE NO ACTION
               ON UPDATE NO ACTION)
               ENGINE = InnoDB
@@ -206,11 +165,11 @@ databaseChangeLog:
               
               
               -- -----------------------------------------------------
-              -- Table `lego_dev`.`carrier`
+              -- Table `lego_sandbox`.`carrier`
               -- -----------------------------------------------------
-              DROP TABLE IF EXISTS `lego_dev`.`carrier` ;
+              DROP TABLE IF EXISTS `lego_sandbox`.`carrier` ;
               
-              CREATE TABLE IF NOT EXISTS `lego_dev`.`carrier` (
+              CREATE TABLE IF NOT EXISTS `lego_sandbox`.`carrier` (
               `carrier_code` VARCHAR(10) COLLATE 'utf8mb3_unicode_ci' NOT NULL,
               `carrier_name` VARCHAR(100) COLLATE 'utf8mb3_unicode_ci' NOT NULL,
               `tracking_url_pattern` VARCHAR(300) COLLATE 'utf8mb3_unicode_ci' NULL DEFAULT NULL,
@@ -219,11 +178,11 @@ databaseChangeLog:
               
               
               -- -----------------------------------------------------
-              -- Table `lego_dev`.`category`
+              -- Table `lego_sandbox`.`category`
               -- -----------------------------------------------------
-              DROP TABLE IF EXISTS `lego_dev`.`category` ;
+              DROP TABLE IF EXISTS `lego_sandbox`.`category` ;
               
-              CREATE TABLE IF NOT EXISTS `lego_dev`.`category` (
+              CREATE TABLE IF NOT EXISTS `lego_sandbox`.`category` (
               `category_id` INT NOT NULL,
               `category_name` VARCHAR(50) COLLATE 'utf8mb3_unicode_ci' NOT NULL,
               `parent_id` INT NULL,
@@ -232,11 +191,11 @@ databaseChangeLog:
               
               
               -- -----------------------------------------------------
-              -- Table `lego_dev`.`condition`
+              -- Table `lego_sandbox`.`condition`
               -- -----------------------------------------------------
-              DROP TABLE IF EXISTS `lego_dev`.`condition` ;
+              DROP TABLE IF EXISTS `lego_sandbox`.`condition` ;
               
-              CREATE TABLE IF NOT EXISTS `lego_dev`.`condition` (
+              CREATE TABLE IF NOT EXISTS `lego_sandbox`.`condition` (
               `condition_id` INT NOT NULL,
               `condition_code` VARCHAR(5) COLLATE 'utf8mb3_unicode_ci' NOT NULL,
               `condition_description` VARCHAR(50) COLLATE 'utf8mb3_unicode_ci' NOT NULL,
@@ -246,11 +205,11 @@ databaseChangeLog:
               
               
               -- -----------------------------------------------------
-              -- Table `lego_dev`.`cost_type`
+              -- Table `lego_sandbox`.`cost_type`
               -- -----------------------------------------------------
-              DROP TABLE IF EXISTS `lego_dev`.`cost_type` ;
+              DROP TABLE IF EXISTS `lego_sandbox`.`cost_type` ;
               
-              CREATE TABLE IF NOT EXISTS `lego_dev`.`cost_type` (
+              CREATE TABLE IF NOT EXISTS `lego_sandbox`.`cost_type` (
               `cost_type_code` VARCHAR(10) COLLATE 'utf8mb3_unicode_ci' NOT NULL,
               `cost_type_name` VARCHAR(45) COLLATE 'utf8mb3_unicode_ci' NOT NULL,
               `cost_type_description` VARCHAR(300) COLLATE 'utf8mb3_unicode_ci' NULL DEFAULT NULL,
@@ -259,11 +218,11 @@ databaseChangeLog:
               
               
               -- -----------------------------------------------------
-              -- Table `lego_dev`.`item`
+              -- Table `lego_sandbox`.`item`
               -- -----------------------------------------------------
-              DROP TABLE IF EXISTS `lego_dev`.`item` ;
+              DROP TABLE IF EXISTS `lego_sandbox`.`item` ;
               
-              CREATE TABLE IF NOT EXISTS `lego_dev`.`item` (
+              CREATE TABLE IF NOT EXISTS `lego_sandbox`.`item` (
               `item_id` INT NOT NULL AUTO_INCREMENT,
               `item_number` VARCHAR(20) COLLATE 'utf8mb3_unicode_ci' NULL DEFAULT NULL,
               `item_name` VARCHAR(100) COLLATE 'utf8mb3_unicode_ci' NOT NULL,
@@ -277,36 +236,36 @@ databaseChangeLog:
               INDEX `fk_item_category1_idx` (`category_id` ASC) VISIBLE,
               CONSTRAINT `fk_item_category1`
               FOREIGN KEY (`category_id`)
-              REFERENCES `lego_dev`.`category` (`category_id`))
+              REFERENCES `lego_sandbox`.`category` (`category_id`))
               ENGINE = InnoDB
               AUTO_INCREMENT = 1348;
               
               
               -- -----------------------------------------------------
-              -- Table `lego_dev`.`external_service_item`
+              -- Table `lego_sandbox`.`external_service_item`
               -- -----------------------------------------------------
-              DROP TABLE IF EXISTS `lego_dev`.`external_service_item` ;
+              DROP TABLE IF EXISTS `lego_sandbox`.`external_service_item` ;
               
-              CREATE TABLE IF NOT EXISTS `lego_dev`.`external_service_item` (
+              CREATE TABLE IF NOT EXISTS `lego_sandbox`.`external_service_item` (
               `external_item_id` INT NOT NULL,
               `item_id` INT NOT NULL,
               INDEX `fk_external_service_item_external_item1_idx` (`external_item_id` ASC) VISIBLE,
               INDEX `fk_external_service_item_item1_idx` (`item_id` ASC) VISIBLE,
               CONSTRAINT `fk_external_service_item_external_item1`
               FOREIGN KEY (`external_item_id`)
-              REFERENCES `lego_dev`.`external_item` (`external_item_id`),
+              REFERENCES `lego_sandbox`.`external_item` (`external_item_id`),
               CONSTRAINT `fk_external_service_item_item1`
               FOREIGN KEY (`item_id`)
-              REFERENCES `lego_dev`.`item` (`item_id`))
+              REFERENCES `lego_sandbox`.`item` (`item_id`))
               ENGINE = InnoDB;
               
               
               -- -----------------------------------------------------
-              -- Table `lego_dev`.`inventory_index`
+              -- Table `lego_sandbox`.`inventory_index`
               -- -----------------------------------------------------
-              DROP TABLE IF EXISTS `lego_dev`.`inventory_index` ;
+              DROP TABLE IF EXISTS `lego_sandbox`.`inventory_index` ;
               
-              CREATE TABLE IF NOT EXISTS `lego_dev`.`inventory_index` (
+              CREATE TABLE IF NOT EXISTS `lego_sandbox`.`inventory_index` (
               `box_id` INT NOT NULL DEFAULT '0',
               `box_index` INT NOT NULL DEFAULT '0',
               `item_number` VARCHAR(15) COLLATE 'utf8mb3_unicode_ci' NOT NULL,
@@ -323,11 +282,11 @@ databaseChangeLog:
               
               
               -- -----------------------------------------------------
-              -- Table `lego_dev`.`item_inventory`
+              -- Table `lego_sandbox`.`item_inventory`
               -- -----------------------------------------------------
-              DROP TABLE IF EXISTS `lego_dev`.`item_inventory` ;
+              DROP TABLE IF EXISTS `lego_sandbox`.`item_inventory` ;
               
-              CREATE TABLE IF NOT EXISTS `lego_dev`.`item_inventory` (
+              CREATE TABLE IF NOT EXISTS `lego_sandbox`.`item_inventory` (
               `item_inventory_id` INT NOT NULL AUTO_INCREMENT,
               `uuid` CHAR(32) NOT NULL,
               `item_id` INT NOT NULL,
@@ -352,22 +311,22 @@ databaseChangeLog:
               UNIQUE INDEX `uuid_UNIQUE` (`uuid` ASC) VISIBLE,
               CONSTRAINT `fk_item_inventory_condition1`
               FOREIGN KEY (`item_condition_id`)
-              REFERENCES `lego_dev`.`condition` (`condition_id`),
+              REFERENCES `lego_sandbox`.`condition` (`condition_id`),
               CONSTRAINT `fk_item_inventory_condition2`
               FOREIGN KEY (`instructions_condition_id`)
-              REFERENCES `lego_dev`.`condition` (`condition_id`),
+              REFERENCES `lego_sandbox`.`condition` (`condition_id`),
               CONSTRAINT `fk_item_inventory_item1`
               FOREIGN KEY (`item_id`)
-              REFERENCES `lego_dev`.`item` (`item_id`))
+              REFERENCES `lego_sandbox`.`item` (`item_id`))
               ENGINE = InnoDB;
               
               
               -- -----------------------------------------------------
-              -- Table `lego_dev`.`party`
+              -- Table `lego_sandbox`.`party`
               -- -----------------------------------------------------
-              DROP TABLE IF EXISTS `lego_dev`.`party` ;
+              DROP TABLE IF EXISTS `lego_sandbox`.`party` ;
               
-              CREATE TABLE IF NOT EXISTS `lego_dev`.`party` (
+              CREATE TABLE IF NOT EXISTS `lego_sandbox`.`party` (
               `party_id` INT NOT NULL AUTO_INCREMENT,
               `party_first_name` VARCHAR(50) COLLATE 'utf8mb3_unicode_ci' NULL DEFAULT NULL,
               `party_middle_initial` CHAR(1) COLLATE 'utf8mb3_unicode_ci' NULL DEFAULT NULL,
@@ -390,11 +349,11 @@ databaseChangeLog:
               
               
               -- -----------------------------------------------------
-              -- Table `lego_dev`.`transaction_platform`
+              -- Table `lego_sandbox`.`transaction_platform`
               -- -----------------------------------------------------
-              DROP TABLE IF EXISTS `lego_dev`.`transaction_platform` ;
+              DROP TABLE IF EXISTS `lego_sandbox`.`transaction_platform` ;
               
-              CREATE TABLE IF NOT EXISTS `lego_dev`.`transaction_platform` (
+              CREATE TABLE IF NOT EXISTS `lego_sandbox`.`transaction_platform` (
               `transaction_platform_id` INT NOT NULL,
               `transaction_platform_name` VARCHAR(100) COLLATE 'utf8mb3_unicode_ci' NOT NULL,
               PRIMARY KEY (`transaction_platform_id`))
@@ -402,11 +361,11 @@ databaseChangeLog:
               
               
               -- -----------------------------------------------------
-              -- Table `lego_dev`.`transactions`
+              -- Table `lego_sandbox`.`transactions`
               -- -----------------------------------------------------
-              DROP TABLE IF EXISTS `lego_dev`.`transactions` ;
+              DROP TABLE IF EXISTS `lego_sandbox`.`transactions` ;
               
-              CREATE TABLE IF NOT EXISTS `lego_dev`.`transactions` (
+              CREATE TABLE IF NOT EXISTS `lego_sandbox`.`transactions` (
               `transaction_id` INT NOT NULL AUTO_INCREMENT,
               `transaction_date` DATE NULL DEFAULT NULL,
               `notes` TINYTEXT COLLATE 'utf8mb3_unicode_ci' NULL DEFAULT NULL,
@@ -420,13 +379,13 @@ databaseChangeLog:
               INDEX `fk_transactions_transaction_platform1_idx` (`transaction_platform_id` ASC) VISIBLE,
               CONSTRAINT `fk_transactions_party1`
               FOREIGN KEY (`from_party_id`)
-              REFERENCES `lego_dev`.`party` (`party_id`),
+              REFERENCES `lego_sandbox`.`party` (`party_id`),
               CONSTRAINT `fk_transactions_party2`
               FOREIGN KEY (`to_party_id`)
-              REFERENCES `lego_dev`.`party` (`party_id`),
+              REFERENCES `lego_sandbox`.`party` (`party_id`),
               CONSTRAINT `fk_transactions_transaction_platform1`
               FOREIGN KEY (`transaction_platform_id`)
-              REFERENCES `lego_dev`.`transaction_platform` (`transaction_platform_id`)
+              REFERENCES `lego_sandbox`.`transaction_platform` (`transaction_platform_id`)
               ON DELETE NO ACTION
               ON UPDATE NO ACTION)
               ENGINE = InnoDB
@@ -434,11 +393,11 @@ databaseChangeLog:
               
               
               -- -----------------------------------------------------
-              -- Table `lego_dev`.`payment_platform`
+              -- Table `lego_sandbox`.`payment_platform`
               -- -----------------------------------------------------
-              DROP TABLE IF EXISTS `lego_dev`.`payment_platform` ;
+              DROP TABLE IF EXISTS `lego_sandbox`.`payment_platform` ;
               
-              CREATE TABLE IF NOT EXISTS `lego_dev`.`payment_platform` (
+              CREATE TABLE IF NOT EXISTS `lego_sandbox`.`payment_platform` (
               `payment_platform_id` INT NOT NULL,
               `payment_platform_name` VARCHAR(50) NOT NULL,
               `payment_platform_url` VARCHAR(500) NULL,
@@ -447,11 +406,11 @@ databaseChangeLog:
               
               
               -- -----------------------------------------------------
-              -- Table `lego_dev`.`payment`
+              -- Table `lego_sandbox`.`payment`
               -- -----------------------------------------------------
-              DROP TABLE IF EXISTS `lego_dev`.`payment` ;
+              DROP TABLE IF EXISTS `lego_sandbox`.`payment` ;
               
-              CREATE TABLE IF NOT EXISTS `lego_dev`.`payment` (
+              CREATE TABLE IF NOT EXISTS `lego_sandbox`.`payment` (
               `payment_id` INT NOT NULL AUTO_INCREMENT,
               `payment_date` DATE NOT NULL,
               `transaction_id` INT NOT NULL,
@@ -466,21 +425,21 @@ databaseChangeLog:
               INDEX `fk_payment_payment_platform1_idx` (`payment_platform_id` ASC) VISIBLE,
               CONSTRAINT `fk_payment_transactions1`
               FOREIGN KEY (`transaction_id`)
-              REFERENCES `lego_dev`.`transactions` (`transaction_id`),
+              REFERENCES `lego_sandbox`.`transactions` (`transaction_id`),
               CONSTRAINT `fk_payment_payment_platform1`
               FOREIGN KEY (`payment_platform_id`)
-              REFERENCES `lego_dev`.`payment_platform` (`payment_platform_id`)
+              REFERENCES `lego_sandbox`.`payment_platform` (`payment_platform_id`)
               ON DELETE NO ACTION
               ON UPDATE NO ACTION)
               ENGINE = InnoDB;
               
               
               -- -----------------------------------------------------
-              -- Table `lego_dev`.`shipment`
+              -- Table `lego_sandbox`.`shipment`
               -- -----------------------------------------------------
-              DROP TABLE IF EXISTS `lego_dev`.`shipment` ;
+              DROP TABLE IF EXISTS `lego_sandbox`.`shipment` ;
               
-              CREATE TABLE IF NOT EXISTS `lego_dev`.`shipment` (
+              CREATE TABLE IF NOT EXISTS `lego_sandbox`.`shipment` (
               `shipment_id` INT NOT NULL AUTO_INCREMENT,
               `shipment_date` DATE NOT NULL,
               `shipment_tracking_number` VARCHAR(45) COLLATE 'utf8mb3_unicode_ci' NULL DEFAULT NULL,
@@ -489,16 +448,16 @@ databaseChangeLog:
               INDEX `fk_shipment_carrier1_idx` (`carrier_code` ASC) VISIBLE,
               CONSTRAINT `fk_shipment_carrier1`
               FOREIGN KEY (`carrier_code`)
-              REFERENCES `lego_dev`.`carrier` (`carrier_code`))
+              REFERENCES `lego_sandbox`.`carrier` (`carrier_code`))
               ENGINE = InnoDB;
               
               
               -- -----------------------------------------------------
-              -- Table `lego_dev`.`transaction_cost`
+              -- Table `lego_sandbox`.`transaction_cost`
               -- -----------------------------------------------------
-              DROP TABLE IF EXISTS `lego_dev`.`transaction_cost` ;
+              DROP TABLE IF EXISTS `lego_sandbox`.`transaction_cost` ;
               
-              CREATE TABLE IF NOT EXISTS `lego_dev`.`transaction_cost` (
+              CREATE TABLE IF NOT EXISTS `lego_sandbox`.`transaction_cost` (
               `transaction_cost_id` INT NOT NULL AUTO_INCREMENT,
               `transaction_id` INT NOT NULL,
               `cost_type_code` VARCHAR(10) COLLATE 'utf8mb3_unicode_ci' NOT NULL,
@@ -508,19 +467,19 @@ databaseChangeLog:
               INDEX `fk_transaction_cost_transactions1_idx` (`transaction_id` ASC) VISIBLE,
               CONSTRAINT `fk_transaction_cost_cost_type1`
               FOREIGN KEY (`cost_type_code`)
-              REFERENCES `lego_dev`.`cost_type` (`cost_type_code`),
+              REFERENCES `lego_sandbox`.`cost_type` (`cost_type_code`),
               CONSTRAINT `fk_transaction_cost_transactions1`
               FOREIGN KEY (`transaction_id`)
-              REFERENCES `lego_dev`.`transactions` (`transaction_id`))
+              REFERENCES `lego_sandbox`.`transactions` (`transaction_id`))
               ENGINE = InnoDB;
               
               
               -- -----------------------------------------------------
-              -- Table `lego_dev`.`transaction_type`
+              -- Table `lego_sandbox`.`transaction_type`
               -- -----------------------------------------------------
-              DROP TABLE IF EXISTS `lego_dev`.`transaction_type` ;
+              DROP TABLE IF EXISTS `lego_sandbox`.`transaction_type` ;
               
-              CREATE TABLE IF NOT EXISTS `lego_dev`.`transaction_type` (
+              CREATE TABLE IF NOT EXISTS `lego_sandbox`.`transaction_type` (
               `transaction_type_code` VARCHAR(5) COLLATE 'utf8mb3_unicode_ci' NOT NULL,
               `transaction_type_description` VARCHAR(50) COLLATE 'utf8mb3_unicode_ci' NOT NULL,
               `conversion_factor` INT NULL DEFAULT NULL,
@@ -529,11 +488,11 @@ databaseChangeLog:
               
               
               -- -----------------------------------------------------
-              -- Table `lego_dev`.`transaction_item`
+              -- Table `lego_sandbox`.`transaction_item`
               -- -----------------------------------------------------
-              DROP TABLE IF EXISTS `lego_dev`.`transaction_item` ;
+              DROP TABLE IF EXISTS `lego_sandbox`.`transaction_item` ;
               
-              CREATE TABLE IF NOT EXISTS `lego_dev`.`transaction_item` (
+              CREATE TABLE IF NOT EXISTS `lego_sandbox`.`transaction_item` (
               `item_transaction_id` INT NOT NULL AUTO_INCREMENT,
               `transaction_id` INT NOT NULL,
               `transaction_type_code` VARCHAR(5) COLLATE 'utf8mb3_unicode_ci' NOT NULL,
@@ -547,13 +506,13 @@ databaseChangeLog:
               INDEX `fk_transaction_item_item_inventory1_idx` (`item_inventory_id` ASC) VISIBLE,
               CONSTRAINT `fk_transaction_item_transaction_type1`
               FOREIGN KEY (`transaction_type_code`)
-              REFERENCES `lego_dev`.`transaction_type` (`transaction_type_code`),
+              REFERENCES `lego_sandbox`.`transaction_type` (`transaction_type_code`),
               CONSTRAINT `fk_transaction_item_transactions1`
               FOREIGN KEY (`transaction_id`)
-              REFERENCES `lego_dev`.`transactions` (`transaction_id`),
+              REFERENCES `lego_sandbox`.`transactions` (`transaction_id`),
               CONSTRAINT `fk_transaction_item_item_inventory1`
               FOREIGN KEY (`item_inventory_id`)
-              REFERENCES `lego_dev`.`item_inventory` (`item_inventory_id`)
+              REFERENCES `lego_sandbox`.`item_inventory` (`item_inventory_id`)
               ON DELETE NO ACTION
               ON UPDATE NO ACTION)
               ENGINE = InnoDB
@@ -561,11 +520,11 @@ databaseChangeLog:
               
               
               -- -----------------------------------------------------
-              -- Table `lego_dev`.`transaction_item_cost`
+              -- Table `lego_sandbox`.`transaction_item_cost`
               -- -----------------------------------------------------
-              DROP TABLE IF EXISTS `lego_dev`.`transaction_item_cost` ;
+              DROP TABLE IF EXISTS `lego_sandbox`.`transaction_item_cost` ;
               
-              CREATE TABLE IF NOT EXISTS `lego_dev`.`transaction_item_cost` (
+              CREATE TABLE IF NOT EXISTS `lego_sandbox`.`transaction_item_cost` (
               `transaction_item_cost_id` INT NOT NULL AUTO_INCREMENT,
               `item_transaction_id` INT NOT NULL,
               `cost_type_code` VARCHAR(10) COLLATE 'utf8mb3_unicode_ci' NOT NULL,
@@ -576,19 +535,19 @@ databaseChangeLog:
               INDEX `fk_transaction_item_cost_transaction_item1_idx` (`item_transaction_id` ASC) VISIBLE,
               CONSTRAINT `fk_transaction_item_cost_cost_type1`
               FOREIGN KEY (`cost_type_code`)
-              REFERENCES `lego_dev`.`cost_type` (`cost_type_code`),
+              REFERENCES `lego_sandbox`.`cost_type` (`cost_type_code`),
               CONSTRAINT `fk_transaction_item_cost_transaction_item1`
               FOREIGN KEY (`item_transaction_id`)
-              REFERENCES `lego_dev`.`transaction_item` (`item_transaction_id`))
+              REFERENCES `lego_sandbox`.`transaction_item` (`item_transaction_id`))
               ENGINE = InnoDB;
               
               
               -- -----------------------------------------------------
-              -- Table `lego_dev`.`transaction_item_image`
+              -- Table `lego_sandbox`.`transaction_item_image`
               -- -----------------------------------------------------
-              DROP TABLE IF EXISTS `lego_dev`.`transaction_item_image` ;
+              DROP TABLE IF EXISTS `lego_sandbox`.`transaction_item_image` ;
               
-              CREATE TABLE IF NOT EXISTS `lego_dev`.`transaction_item_image` (
+              CREATE TABLE IF NOT EXISTS `lego_sandbox`.`transaction_item_image` (
               `transaction_item_image_id` INT NOT NULL AUTO_INCREMENT,
               `transaction_item_image_type_code` VARCHAR(10) COLLATE 'utf8mb3_unicode_ci' NOT NULL,
               `transaction_item_image_url` VARCHAR(300) COLLATE 'utf8mb3_unicode_ci' NULL DEFAULT NULL,
@@ -598,16 +557,16 @@ databaseChangeLog:
               INDEX `fk_transaction_item_image_transaction_item1_idx` (`transaction_item_item_transaction_id` ASC) VISIBLE,
               CONSTRAINT `fk_transaction_item_image_transaction_item1`
               FOREIGN KEY (`transaction_item_item_transaction_id`)
-              REFERENCES `lego_dev`.`transaction_item` (`item_transaction_id`))
+              REFERENCES `lego_sandbox`.`transaction_item` (`item_transaction_id`))
               ENGINE = InnoDB;
               
               
               -- -----------------------------------------------------
-              -- Table `lego_dev`.`external_item_inventory`
+              -- Table `lego_sandbox`.`external_item_inventory`
               -- -----------------------------------------------------
-              DROP TABLE IF EXISTS `lego_dev`.`external_item_inventory` ;
+              DROP TABLE IF EXISTS `lego_sandbox`.`external_item_inventory` ;
               
-              CREATE TABLE IF NOT EXISTS `lego_dev`.`external_item_inventory` (
+              CREATE TABLE IF NOT EXISTS `lego_sandbox`.`external_item_inventory` (
               `external_item_id` INT NOT NULL,
               `item_inventory_id` INT NOT NULL,
               `fixed_price` TINYINT(1) NOT NULL DEFAULT 1,
@@ -622,23 +581,23 @@ databaseChangeLog:
               INDEX `fk_external_item_has_item_inventory_external_item1_idx` (`external_item_id` ASC) VISIBLE,
               CONSTRAINT `fk_external_item_has_item_inventory_external_item1`
               FOREIGN KEY (`external_item_id`)
-              REFERENCES `lego_dev`.`external_item` (`external_item_id`)
+              REFERENCES `lego_sandbox`.`external_item` (`external_item_id`)
               ON DELETE NO ACTION
               ON UPDATE NO ACTION,
               CONSTRAINT `fk_external_item_has_item_inventory_item_inventory1`
               FOREIGN KEY (`item_inventory_id`)
-              REFERENCES `lego_dev`.`item_inventory` (`item_inventory_id`)
+              REFERENCES `lego_sandbox`.`item_inventory` (`item_inventory_id`)
               ON DELETE NO ACTION
               ON UPDATE NO ACTION)
               ENGINE = InnoDB;
               
               
               -- -----------------------------------------------------
-              -- Table `lego_dev`.`bricklink_item_inventory`
+              -- Table `lego_sandbox`.`bricklink_item_inventory`
               -- -----------------------------------------------------
-              DROP TABLE IF EXISTS `lego_dev`.`bricklink_item_inventory` ;
+              DROP TABLE IF EXISTS `lego_sandbox`.`bricklink_item_inventory` ;
               
-              CREATE TABLE IF NOT EXISTS `lego_dev`.`bricklink_item_inventory` (
+              CREATE TABLE IF NOT EXISTS `lego_sandbox`.`bricklink_item_inventory` (
               `bricklink_item_inventory_id` INT NOT NULL AUTO_INCREMENT,
               `external_item_id` INT NOT NULL,
               `item_inventory_id` INT NOT NULL,
@@ -669,7 +628,7 @@ databaseChangeLog:
               INDEX `fk_bricklink_item_inventory_external_item_inventory1_idx` (`external_item_id` ASC, `item_inventory_id` ASC) VISIBLE,
               CONSTRAINT `fk_bricklink_item_inventory_external_item_inventory1`
               FOREIGN KEY (`external_item_id` , `item_inventory_id`)
-              REFERENCES `lego_dev`.`external_item_inventory` (`external_item_id` , `item_inventory_id`)
+              REFERENCES `lego_sandbox`.`external_item_inventory` (`external_item_id` , `item_inventory_id`)
               ON DELETE NO ACTION
               ON UPDATE NO ACTION)
               ENGINE = InnoDB
@@ -677,11 +636,11 @@ databaseChangeLog:
               
               
               -- -----------------------------------------------------
-              -- Table `lego_dev`.`transaction_item_shipment`
+              -- Table `lego_sandbox`.`transaction_item_shipment`
               -- -----------------------------------------------------
-              DROP TABLE IF EXISTS `lego_dev`.`transaction_item_shipment` ;
+              DROP TABLE IF EXISTS `lego_sandbox`.`transaction_item_shipment` ;
               
-              CREATE TABLE IF NOT EXISTS `lego_dev`.`transaction_item_shipment` (
+              CREATE TABLE IF NOT EXISTS `lego_sandbox`.`transaction_item_shipment` (
               `item_transaction_id` INT NOT NULL,
               `shipment_id` INT NOT NULL,
               PRIMARY KEY (`item_transaction_id`, `shipment_id`),
@@ -689,12 +648,12 @@ databaseChangeLog:
               INDEX `fk_transaction_item_has_shipment_transaction_item1_idx` (`item_transaction_id` ASC) VISIBLE,
               CONSTRAINT `fk_transaction_item_has_shipment_transaction_item1`
               FOREIGN KEY (`item_transaction_id`)
-              REFERENCES `lego_dev`.`transaction_item` (`item_transaction_id`)
+              REFERENCES `lego_sandbox`.`transaction_item` (`item_transaction_id`)
               ON DELETE NO ACTION
               ON UPDATE NO ACTION,
               CONSTRAINT `fk_transaction_item_has_shipment_shipment1`
               FOREIGN KEY (`shipment_id`)
-              REFERENCES `lego_dev`.`shipment` (`shipment_id`)
+              REFERENCES `lego_sandbox`.`shipment` (`shipment_id`)
               ON DELETE NO ACTION
               ON UPDATE NO ACTION)
               ENGINE = InnoDB;
