@@ -3,9 +3,8 @@ spring:
     database-key-name: site5-dev-lego
   liquibase:
     parameters:
-      environment-schema: lego_sandbox
-
+      environment-schema: lego_dev
 
 target-database:
   datasource:
-    database-key-name: legolandserver1-lego-sandbox
+    database-key-name: legolandserver1-lego-dev

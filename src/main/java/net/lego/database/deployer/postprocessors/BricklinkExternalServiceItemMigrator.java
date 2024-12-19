@@ -50,9 +50,14 @@ public class BricklinkExternalServiceItemMigrator implements PostProcessor {
 
         log.info("Loading {} Bricklink External Service Items", itemCount.get());
 
+        PercentCompleteTabulator percentCompleteTabulator = new PercentCompleteTabulator(itemCount.get(), 1.0d, d -> {
+            log.info("percent completed %4.1f".formatted(d*100));
+        });
+
         try {
             for (int i = 0; i < itemCount.get(); i++) {
                 itemCompletionService.take().get();
+                percentCompleteTabulator.incrementPercentComplete();
             }
         } catch (ExecutionException | InterruptedException e) {
             throw new RuntimeException(e);

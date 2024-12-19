@@ -35,9 +35,14 @@ public class ItemMigrator implements PostProcessor {
                     itemCompletionService.submit(new ItemCallable(itemDao, item));
                 });
 
+        PercentCompleteTabulator percentCompleteTabulator = new PercentCompleteTabulator(itemCount.get(), .01d, d -> {
+            log.info("percent completed %4.1f".formatted(d*100));
+        });
+
         try {
             for (int i = 0; i < itemCount.get(); i++) {
                 itemCompletionService.take().get();
+                percentCompleteTabulator.incrementPercentComplete();
             }
         } catch (InterruptedException e) {
             throw new RuntimeException(e);

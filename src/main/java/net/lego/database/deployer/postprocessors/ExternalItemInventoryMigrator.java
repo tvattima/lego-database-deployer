@@ -2,10 +2,12 @@ package net.lego.database.deployer.postprocessors;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.lego.data.v1.dto.BricklinkInventory;
 import net.lego.data.v2.dao.*;
 import net.lego.data.v2.dto.*;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -23,10 +25,14 @@ public class ExternalItemInventoryMigrator implements PostProcessor {
     public void execute() {
         log.info("ExternalItemInventory");
 
-        bricklinkInventoryDaoV1.findAll()
-                .forEach(bricklinkInventory -> {
-                    log.info("BricklinkInventory [{}]", bricklinkInventory);
 
+        List<BricklinkInventory> bricklinkInventoryList = bricklinkInventoryDaoV1.findAll();
+        PercentCompleteTabulator percentCompleteTabulator = new PercentCompleteTabulator(bricklinkInventoryList.size(), 1.0d, d -> {
+            log.info("percent completed %4.1f".formatted(d*100));
+        });
+
+        bricklinkInventoryList
+                .forEach(bricklinkInventory -> {
                     Optional<InventoryIndex> inventoryIndex = inventoryIndexDao.findByBoxIdAndBoxIndex(bricklinkInventory.getBoxId(), bricklinkInventory.getBoxIndex());
                     inventoryIndex.ifPresentOrElse(invIdx -> {
                         Optional<ExternalItem> externalItem = externalItemDao.findByExternalNumber(bricklinkInventory.getBlItemNo());
@@ -65,6 +71,7 @@ public class ExternalItemInventoryMigrator implements PostProcessor {
                             });
                         }, () -> log.warn("Unable to find external item for bricklink item number [{}]", bricklinkInventory.getBlItemNo()));
                     }, () -> log.warn("Unable to find Inventory Index for Box Id [{}] and Box Index [{}]", bricklinkInventory.getBoxId(), bricklinkInventory.getBoxIndex()));
+                    percentCompleteTabulator.incrementPercentComplete();
                 });
     }
 }

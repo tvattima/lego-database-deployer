@@ -6,6 +6,8 @@ import net.lego.data.v2.dao.PartyDao;
 import net.lego.data.v2.dto.Party;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -17,49 +19,52 @@ public class PartyMigrator implements PostProcessor {
     @Override
     public void execute() {
         log.info("PartyMigrator");
-        partyDaoV1.findAll()
-                  .forEach(p -> {
-                      log.info("Party [{}]", p);
-                      partyDao.findPartyById(p.getPartyId())
-                              .ifPresentOrElse(party -> {
-                                          log.info("Updating existing Party [{}] to [{}]", party, p);
-                                          partyDao.update(Party.builder()
-                                                               .partyFirstName(p.getPartyFirstName())
-                                                               .partyMiddleInitial(p.getPartyMiddleInitial())
-                                                               .partyLastName(p.getPartyLastName())
-                                                               .partyAddress1(p.getPartyAddress1())
-                                                               .partyAddress2(p.getPartyAddress2())
-                                                               .partyCity(p.getPartyCity())
-                                                               .partyState(p.getPartyState())
-                                                               .partyPostalCode(p.getPartyPostalCode())
-                                                               .partyCountryCode(p.getPartyCountryCode())
-                                                               .partyCountry(p.getPartyCountry())
-                                                               .partyPhone(p.getPartyPhone())
-                                                               .partyEmail(p.getPartyEmail())
-                                                               .partyType(p.getPartyType())
-                                                               .partyActivationDate(p.getPartyActivationDate())
-                                                               .build());
-                                      },
-                                      () -> {
-                                          Party newParty = Party.builder()
-                                               .partyFirstName(p.getPartyFirstName())
-                                               .partyMiddleInitial(p.getPartyMiddleInitial())
-                                               .partyLastName(p.getPartyLastName())
-                                               .partyAddress1(p.getPartyAddress1())
-                                               .partyAddress2(p.getPartyAddress2())
-                                               .partyCity(p.getPartyCity())
-                                               .partyState(p.getPartyState())
-                                               .partyPostalCode(p.getPartyPostalCode())
-                                               .partyCountryCode(p.getPartyCountryCode())
-                                               .partyCountry(p.getPartyCountry())
-                                               .partyPhone(p.getPartyPhone())
-                                               .partyEmail(p.getPartyEmail())
-                                               .partyType(p.getPartyType())
-                                               .partyActivationDate(p.getPartyActivationDate())
-                                               .build();
-                                          partyDao.insert(newParty);
-                                          partyDao.decrementPartyId(newParty.getPartyId());
-                                      });
-                  });
+
+        List<net.lego.data.v1.dto.Party> partyList = partyDaoV1.findAll();
+        PercentCompleteTabulator percentCompleteTabulator = new PercentCompleteTabulator(partyList.size(), .01d, d -> {
+            log.info("percent completed %4.1f".formatted(d * 100));
+        });
+        partyList.forEach(p -> {
+            partyDao.findPartyById(p.getPartyId())
+                    .ifPresentOrElse(party -> {
+                                partyDao.update(Party.builder()
+                                        .partyFirstName(p.getPartyFirstName())
+                                        .partyMiddleInitial(p.getPartyMiddleInitial())
+                                        .partyLastName(p.getPartyLastName())
+                                        .partyAddress1(p.getPartyAddress1())
+                                        .partyAddress2(p.getPartyAddress2())
+                                        .partyCity(p.getPartyCity())
+                                        .partyState(p.getPartyState())
+                                        .partyPostalCode(p.getPartyPostalCode())
+                                        .partyCountryCode(p.getPartyCountryCode())
+                                        .partyCountry(p.getPartyCountry())
+                                        .partyPhone(p.getPartyPhone())
+                                        .partyEmail(p.getPartyEmail())
+                                        .partyType(p.getPartyType())
+                                        .partyActivationDate(p.getPartyActivationDate())
+                                        .build());
+                            },
+                            () -> {
+                                Party newParty = Party.builder()
+                                        .partyFirstName(p.getPartyFirstName())
+                                        .partyMiddleInitial(p.getPartyMiddleInitial())
+                                        .partyLastName(p.getPartyLastName())
+                                        .partyAddress1(p.getPartyAddress1())
+                                        .partyAddress2(p.getPartyAddress2())
+                                        .partyCity(p.getPartyCity())
+                                        .partyState(p.getPartyState())
+                                        .partyPostalCode(p.getPartyPostalCode())
+                                        .partyCountryCode(p.getPartyCountryCode())
+                                        .partyCountry(p.getPartyCountry())
+                                        .partyPhone(p.getPartyPhone())
+                                        .partyEmail(p.getPartyEmail())
+                                        .partyType(p.getPartyType())
+                                        .partyActivationDate(p.getPartyActivationDate())
+                                        .build();
+                                partyDao.insert(newParty);
+                                partyDao.decrementPartyId(newParty.getPartyId());
+                            });
+            percentCompleteTabulator.incrementPercentComplete();
+        });
     }
 }

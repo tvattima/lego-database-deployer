@@ -69,10 +69,13 @@ public class BricklinkExternalItemMigrator implements PostProcessor {
         });
 
         log.info("Loading {} Bricklink Set Catalog items", itemCount.get());
-
+        PercentCompleteTabulator percentCompleteTabulator = new PercentCompleteTabulator(itemCount.get(), .01d, d -> {
+            log.info("percent completed %4.1f".formatted(d));
+        });
         try {
             for (int i = 0; i < itemCount.get(); i++) {
                 itemCompletionService.take().get();
+                percentCompleteTabulator.incrementPercentComplete();
             }
         } catch (ExecutionException | InterruptedException e) {
             throw new RuntimeException(e);
@@ -97,10 +100,13 @@ public class BricklinkExternalItemMigrator implements PostProcessor {
         });
 
         log.info("Loading {} Bricklink Book Catalog items", itemCount.get());
-
+        PercentCompleteTabulator percentCompleteTabulator = new PercentCompleteTabulator(itemCount.get(), .01d, d -> {
+            log.info("percent completed %4.1f".formatted(d*100));
+        });
         try {
             for (int i = 0; i < itemCount.get(); i++) {
                 itemCompletionService.take().get();
+                percentCompleteTabulator.incrementPercentComplete();
             }
         } catch (ExecutionException | InterruptedException e) {
             throw new RuntimeException(e);
@@ -125,10 +131,13 @@ public class BricklinkExternalItemMigrator implements PostProcessor {
         });
 
         log.info("Loading {} Bricklink Gear Catalog items", itemCount.get());
-
+        PercentCompleteTabulator percentCompleteTabulator = new PercentCompleteTabulator(itemCount.get(), .01d, d -> {
+            log.info("percent completed %4.1f".formatted(d*100));
+        });
         try {
             for (int i = 0; i < itemCount.get(); i++) {
                 itemCompletionService.take().get();
+                percentCompleteTabulator.incrementPercentComplete();
             }
         } catch (ExecutionException | InterruptedException e) {
             throw new RuntimeException(e);

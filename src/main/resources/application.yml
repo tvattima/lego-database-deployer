@@ -64,8 +64,8 @@ postprocessors:
       - ExternalServiceMigrator
       - InventoryIndexMigrator
       - ItemMigrator
-#      - BricklinkExternalItemMigrator
-#      - BricklinkExternalServiceItemMigrator
+      - BricklinkExternalItemMigrator
+      - BricklinkExternalServiceItemMigrator
       - ItemInventoryMigrator
       - ExternalItemInventoryMigrator
       - BricklinkItemInventoryMigrator
