@@ -20,6 +20,8 @@ public class PartyMigrator implements PostProcessor {
     public void execute() {
         log.info("PartyMigrator");
 
+        partyDao.setAutoIncrementMode();
+
         List<net.lego.data.v1.dto.Party> partyList = partyDaoV1.findAll();
         PercentCompleteTabulator percentCompleteTabulator = new PercentCompleteTabulator(partyList.size(), .01d, d -> {
             log.info("percent completed %4.1f".formatted(d * 100));
@@ -27,6 +29,7 @@ public class PartyMigrator implements PostProcessor {
         partyList.forEach(p -> {
             partyDao.findPartyById(p.getPartyId())
                     .ifPresentOrElse(party -> {
+                        log.info("parties found %s".formatted(party));
                                 partyDao.update(Party.builder()
                                         .partyFirstName(p.getPartyFirstName())
                                         .partyMiddleInitial(p.getPartyMiddleInitial())
@@ -46,6 +49,7 @@ public class PartyMigrator implements PostProcessor {
                             },
                             () -> {
                                 Party newParty = Party.builder()
+                                        .partyId(p.getPartyId())
                                         .partyFirstName(p.getPartyFirstName())
                                         .partyMiddleInitial(p.getPartyMiddleInitial())
                                         .partyLastName(p.getPartyLastName())
@@ -61,8 +65,8 @@ public class PartyMigrator implements PostProcessor {
                                         .partyType(p.getPartyType())
                                         .partyActivationDate(p.getPartyActivationDate())
                                         .build();
-                                partyDao.insert(newParty);
-                                partyDao.decrementPartyId(newParty.getPartyId());
+                                partyDao.migrate(newParty);
+                                log.info("new party created %s".formatted(newParty));
                             });
             percentCompleteTabulator.incrementPercentComplete();
         });
