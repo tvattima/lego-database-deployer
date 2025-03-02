@@ -38,10 +38,10 @@ public class ExternalItemInventoryMigrator implements PostProcessor {
                         Optional<ExternalItem> externalItem = externalItemDao.findByExternalNumber(bricklinkInventory.getBlItemNo());
                         externalItem.ifPresentOrElse(ei -> {
                             Optional<ItemInventory> itemInventory = itemInventoryDao.findByUuid(bricklinkInventory.getUuid());
-                            ExternalServiceItem externalServiceItem = externalServiceItemDao.findByExternalItemId(ei.getExternalItemId())
-                                    .orElseThrow(() -> new RuntimeException("Unable to find external service item for externalItemId [%d], uuid [%s], bricklink item number [%s]".formatted(ei.getExternalItemId(), bricklinkInventory.getUuid(), bricklinkInventory.getBlItemNo())));
+                            ExternalServiceItem externalServiceItem = externalServiceItemDao.findByExternalItemId(ei.getItemId())
+                                    .orElseThrow(() -> new RuntimeException("Unable to find external service item for itemId [%d], uuid [%s], bricklink item number [%s]".formatted(ei.getItemId(), bricklinkInventory.getUuid(), bricklinkInventory.getBlItemNo())));
                             itemInventory.ifPresentOrElse(ii -> {
-                                Optional<ExternalItemInventory> externalItemInventory = externalItemInventoryDao.findByExternalItemIdAndItemInventoryId(ei.getExternalItemId(), ii.getItemInventoryId());
+                                Optional<ExternalItemInventory> externalItemInventory = externalItemInventoryDao.findByExternalItemIdAndItemInventoryId(ei.getItemId(), ii.getItemInventoryId());
                                 externalItemInventory.ifPresentOrElse(eii -> {
                                     externalItemInventoryDao.update(ExternalItemInventory.builder()
                                             .fixedPrice(eii.getFixedPrice())

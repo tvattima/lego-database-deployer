@@ -14,10 +14,7 @@ import net.lego.data.v2.dto.ExternalService;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StopWatch;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
@@ -101,7 +98,7 @@ public class BricklinkExternalItemMigrator implements PostProcessor {
 
         log.info("Loading {} Bricklink Book Catalog items", itemCount.get());
         PercentCompleteTabulator percentCompleteTabulator = new PercentCompleteTabulator(itemCount.get(), .01d, d -> {
-            log.info("percent completed %4.1f".formatted(d*100));
+            log.info("percent completed %4.1f".formatted(d * 100));
         });
         try {
             for (int i = 0; i < itemCount.get(); i++) {
@@ -132,7 +129,7 @@ public class BricklinkExternalItemMigrator implements PostProcessor {
 
         log.info("Loading {} Bricklink Gear Catalog items", itemCount.get());
         PercentCompleteTabulator percentCompleteTabulator = new PercentCompleteTabulator(itemCount.get(), .01d, d -> {
-            log.info("percent completed %4.1f".formatted(d*100));
+            log.info("percent completed %4.1f".formatted(d * 100));
         });
         try {
             for (int i = 0; i < itemCount.get(); i++) {
@@ -156,27 +153,31 @@ public class BricklinkExternalItemMigrator implements PostProcessor {
         public String call() throws Exception {
             final AtomicLong externalUniqueId = new AtomicLong(0);
             externalItemDao.findByExternalNumber(catalogItem.getItemId()).ifPresentOrElse(externalItem -> {
-                externalUniqueId.set(externalItem.getExternalUniqueId());
-                if ((externalUniqueId.get() == 0L) || (!catalogItem.getItemId().equals(externalItem.getExternalNumber()))) {
+                externalUniqueId.set(externalItem.getUniqueId());
+                if ((externalUniqueId.get() == 0L) || (!catalogItem.getItemId().equals(externalItem.getNumber()))) {
                     externalUniqueId.set(lookupBricklinkInternalItemId(catalogItem.getItemId(), externalItemType));
                 }
                 externalItemDao.update(ExternalItem.builder()
-                        .externalItemId(externalItem.getExternalItemId())
-                        .externalNumber(externalItem.getExternalNumber())
-                        .externalName(catalogItem.getItemName())
-                        .externalItemType(externalItemType)
-                        .externalUniqueId(externalUniqueId.get())
-                        .externalUrl(null)
+                        .itemId(externalItem.getItemId())
+                        .number(externalItem.getNumber())
+                        .name(catalogItem.getItemName())
+                        .itemType(externalItemType)
+                        .uniqueId(externalUniqueId.get())
+                        .url(null)
+                        .categoryId(externalItem.getCategoryId())
+                        .yearReleased(externalItem.getYearReleased())
                         .build());
             }, () -> {
                 externalUniqueId.set(lookupBricklinkInternalItemId(catalogItem.getItemId(), externalItemType));
                 externalItemDao.insert(ExternalItem.builder()
-                        .externalNumber(catalogItem.getItemId())
-                        .externalName(catalogItem.getItemName())
-                        .externalUniqueId(externalUniqueId.get())
-                        .externalItemType(externalItemType)
-                        .externalUrl(null)
-                        .externalServiceId(externalServiceId)
+                        .number(catalogItem.getItemId())
+                        .name(catalogItem.getItemName())
+                        .uniqueId(externalUniqueId.get())
+                        .itemType(externalItemType)
+                        .url(null)
+                        .categoryId(catalogItem.getCategoryId())
+                        .yearReleased(Optional.ofNullable(catalogItem.getItemYear()).map(Integer::valueOf).orElse(null))
+                        .serviceId(externalServiceId)
                         .build());
             });
 

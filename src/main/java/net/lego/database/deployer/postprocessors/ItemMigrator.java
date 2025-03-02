@@ -75,19 +75,19 @@ public class ItemMigrator implements PostProcessor {
                                     .itemNumber(item.getItemNumber())
                                     .itemName(item.getItemName())
                                     .notes(item.getNotes())
-                                    .categoryId(item.getCategories().stream().findAny().map(Category::getCategoryId).orElse(0))
+                                    .isObsolete(null)
                                     .build());
                         } catch (Exception e) {
                             throw new RuntimeException(e);
                         }
                     }, () -> {
                         try {
-                            itemDao.insert(Item.builder()
+                            itemDao.migrate(Item.builder()
                                     .itemId(item.getItemId())
                                     .itemNumber(item.getItemNumber())
                                     .itemName(item.getItemName())
                                     .notes(item.getNotes())
-                                    .categoryId(item.getCategories().stream().findAny().map(Category::getCategoryId).orElse(0))
+                                    .isObsolete(null)
                                     .build());
                         } catch (Exception e) {
                             throw new RuntimeException(e);

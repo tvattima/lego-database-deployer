@@ -41,10 +41,10 @@ public class BricklinkItemInventoryMigrator implements PostProcessor {
                         externalItem.ifPresentOrElse(ei -> {
                             ItemInventory itemInventory = itemInventoryDao.findByUuid(bricklinkInventory.getUuid())
                                     .orElseThrow(() -> new RuntimeException("Unable to find item inventory for uuid [%s]".formatted(bricklinkInventory.getUuid())));
-                            ExternalServiceItem externalServiceItem = externalServiceItemDao.findByExternalItemId(ei.getExternalItemId())
-                                    .orElseThrow(() -> new RuntimeException("Unable to find external service item for externalItemId [%d], uuid [%s], bricklink item number [%s]".formatted(ei.getExternalItemId(), bricklinkInventory.getUuid(), bricklinkInventory.getBlItemNo())));
+                            ExternalServiceItem externalServiceItem = externalServiceItemDao.findByExternalItemId(ei.getItemId())
+                                    .orElseThrow(() -> new RuntimeException("Unable to find external service item for itemId [%d], uuid [%s], bricklink item number [%s]".formatted(ei.getItemId(), bricklinkInventory.getUuid(), bricklinkInventory.getBlItemNo())));
                             ExternalItemInventory externalItemInventory = externalItemInventoryDao.findByExternalItemIdAndItemInventoryId(externalServiceItem.getExternalItemId(), itemInventory.getItemInventoryId())
-                                    .orElseThrow(() -> new RuntimeException("Unable to find external item inventory for externalItemId [%d], uuid [%s], bricklink item number [%s]".formatted(ei.getExternalItemId(), bricklinkInventory.getUuid(), bricklinkInventory.getBlItemNo())));
+                                    .orElseThrow(() -> new RuntimeException("Unable to find external item inventory for itemId [%d], uuid [%s], bricklink item number [%s]".formatted(ei.getItemId(), bricklinkInventory.getUuid(), bricklinkInventory.getBlItemNo())));
                             Optional<BricklinkItemInventory> bricklinkItemInventory = bricklinkItemInventoryDao.findByExternalItemIdAndItemInventoryId(externalItemInventory.getExternalItemId(), itemInventory.getItemInventoryId());
                             bricklinkItemInventory.ifPresentOrElse(bii -> {
                                 bricklinkItemInventoryDao.update(

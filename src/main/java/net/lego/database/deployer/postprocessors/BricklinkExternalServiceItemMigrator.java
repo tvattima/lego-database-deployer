@@ -82,14 +82,14 @@ public class BricklinkExternalServiceItemMigrator implements PostProcessor {
             internalItem.ifPresentOrElse(item -> {
                 Optional<ExternalItem> externalitem = externalItemDao.findByExternalUniqueId(bricklinkItem.getBlItemId());
                 externalitem.ifPresentOrElse(externalItem -> {
-                    if (externalServiceItemDao.findByExternalItemIdAndItemId(externalItem.getExternalItemId(), bricklinkItem.getItemId()).isEmpty()) {
+                    if (externalServiceItemDao.findByExternalItemIdAndItemId(externalItem.getItemId(), bricklinkItem.getItemId()).isEmpty()) {
                         try {
                             externalServiceItemDao.insert(ExternalServiceItem.builder()
-                                    .externalItemId(externalItem.getExternalItemId())
+                                    .externalItemId(externalItem.getItemId())
                                     .itemId(bricklinkItem.getItemId())
                                     .build());
                         } catch (Exception e) {
-                            log.error("Unable to insert into external_service_item values (%s, %s) Error :: %s".formatted(externalItem.getExternalItemId(), bricklinkItem.getItemId(), e.getMessage()), e);
+                            log.error("Unable to insert into external_service_item values (%s, %s) Error :: %s".formatted(externalItem.getItemId(), bricklinkItem.getItemId(), e.getMessage()), e);
                         }
                     }
                 }, () -> {
