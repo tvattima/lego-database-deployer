@@ -75,7 +75,7 @@ public class ItemMigrator implements PostProcessor {
                                     .itemNumber(item.getItemNumber())
                                     .itemName(item.getItemName())
                                     .notes(item.getNotes())
-                                    .isObsolete(null)
+                                    .isObsolete(existingItem.getIsObsolete())
                                     .build());
                         } catch (Exception e) {
                             throw new RuntimeException(e);

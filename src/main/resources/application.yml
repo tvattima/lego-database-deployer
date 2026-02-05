@@ -1,3 +1,5 @@
+import-path: /dev/config
+
 spring:
   jmx:
     enabled: false
@@ -18,7 +20,7 @@ spring:
   main:
     web-application-type: none
   config:
-    import: file:/dev/config/bricklink/bricklink-client-api-keys.yml, file:/dev/config/bricklink/bricklink-web.yml, file:/dev/config/database/database-configuration.yml
+    import: file:${import-path}/bricklink/bricklink-client-api-keys.yml, file:${import-path}/bricklink/bricklink-web.yml
 
 target-database:
   datasource:
@@ -42,11 +44,18 @@ bricklink:
       default-max-per-route: 20
       max-per-route: 20
       max-total: 50
+    urls:
+      login-logout: "https://www.bricklink.com/ajax/renovate/loginandout.ajax"
+      imgAdd: "https://www.bricklink.com/imgAdd.asp"
+      inventoryDetail: "https://www.bricklink.com/inventory_detail.asp"
+      inventoryUpdate: "https://www.bricklink.com/inventory_detail.asp"
+      wantedListDownload: "https://www.bricklink.com/files/clone/wanted/downloadXML.file"
+      catalogDownload: "https://www.bricklink.com/catalogDownload.asp?a=a"
 
 logging:
   level:
     root: INFO
-    org.apache.http.client.protocol: ERROR
+    org.apache.hc.client5.http.protocol: ERROR
 
 postprocessors:
   groups:

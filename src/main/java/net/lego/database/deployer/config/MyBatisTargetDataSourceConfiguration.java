@@ -1,6 +1,8 @@
 package net.lego.database.deployer.config;
 
 import com.zaxxer.hikari.HikariDataSource;
+import io.legohunter.lego.data.configuration.DatabaseProperties;
+import io.legohunter.lego.data.configuration.SourceDataSourceProperties;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.SqlSessionTemplate;
@@ -17,7 +19,10 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import javax.sql.DataSource;
 
 @Configuration
-@EnableConfigurationProperties(TargetDataSourceProperties.class)
+@EnableConfigurationProperties({
+        TargetDataSourceProperties.class,
+        DatabaseProperties.class
+})
 @MapperScan(basePackages = {"net.lego.data.v2.mybatis.mapper"}, sqlSessionFactoryRef = "targetSqlSessionFactory")
 @EnableTransactionManagement
 public class MyBatisTargetDataSourceConfiguration {

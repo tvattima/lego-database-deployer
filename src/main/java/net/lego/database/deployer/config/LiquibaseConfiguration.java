@@ -35,7 +35,7 @@ public class LiquibaseConfiguration {
 
     @Bean
     @DependsOn("liquibase")
-    public LiquibasePostProcessor liquibasePostProcessor(final SpringLiquibase springLiquibase, final List<PostProcessor> postProcessors, final PostProcessorProperties postProcessorProperties, @Qualifier("sourceDataSource") final DataSource dataSource, @Qualifier("targetDataSource") final DataSource targetDataSource) {
+    public LiquibasePostProcessor liquibasePostProcessor(final SpringLiquibase springLiquibase, final List<PostProcessor> postProcessors, final PostProcessorProperties postProcessorProperties, @Qualifier("dataSource") final DataSource dataSource, @Qualifier("targetDataSource") final DataSource targetDataSource) {
         return new LiquibasePostProcessor(postProcessors, postProcessorProperties, dataSource, targetDataSource);
     }
 }

@@ -3,7 +3,7 @@ package net.lego.database.deployer.config;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import net.bricklink.data.lego.ibatis.configuration.DataSourceProperties;
+import io.legohunter.lego.data.configuration.SourceDataSourceProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
@@ -12,5 +12,5 @@ import org.springframework.context.annotation.Configuration;
 @Setter
 @Configuration
 @ConfigurationProperties(prefix = "target-database.datasource")
-public class TargetDataSourceProperties extends DataSourceProperties {
+public class TargetDataSourceProperties extends SourceDataSourceProperties {
 }

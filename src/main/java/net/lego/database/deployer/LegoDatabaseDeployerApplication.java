@@ -1,6 +1,7 @@
 package net.lego.database.deployer;
 
 import lombok.extern.slf4j.Slf4j;
+import net.lego.data.v2.dto.Item;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
