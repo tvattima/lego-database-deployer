@@ -5,16 +5,13 @@ databaseChangeLog:
       changes:
         - sql:
             dbms: 'mysql'
-            sql: |
+            sql: |              
               -- MySQL Workbench Forward Engineering
               
               SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
               SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
               SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO,ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
               
-              -- -----------------------------------------------------
-              -- Schema mydb
-              -- -----------------------------------------------------
               -- -----------------------------------------------------
               -- Schema ${environment-schema}
               -- -----------------------------------------------------
@@ -118,10 +115,17 @@ databaseChangeLog:
               DROP TABLE IF EXISTS `${environment-schema}`.`category` ;
               
               CREATE TABLE IF NOT EXISTS `${environment-schema}`.`category` (
-              `category_id` INT NOT NULL,
+              `external_service_id` INT NOT NULL,
+              `external_category_id` INT NOT NULL,
               `category_name` VARCHAR(50) COLLATE 'utf8mb3_unicode_ci' NOT NULL,
               `parent_id` INT NULL,
-              PRIMARY KEY (`category_id`))
+              PRIMARY KEY (`external_service_id`, `external_category_id`),
+              INDEX `fk_category_external_service1_idx` (`external_service_id` ASC) VISIBLE,
+              CONSTRAINT `fk_category_external_service1`
+              FOREIGN KEY (`external_service_id`)
+              REFERENCES `${environment-schema}`.`external_service` (`external_service_id`)
+              ON DELETE NO ACTION
+              ON UPDATE NO ACTION)
               ENGINE = InnoDB;
               
               
@@ -132,23 +136,19 @@ databaseChangeLog:
               
               CREATE TABLE IF NOT EXISTS `${environment-schema}`.`external_item` (
               `external_item_id` INT NOT NULL AUTO_INCREMENT,
+              `external_service_id` INT NOT NULL,
+              `external_category_id` INT NOT NULL,
               `external_number` VARCHAR(25) COLLATE 'utf8mb3_unicode_ci' NOT NULL,
-              `external_unique_id` INT NOT NULL,
+              `external_unique_id` INT NULL,
               `external_name` VARCHAR(250) COLLATE 'utf8mb3_unicode_ci' NOT NULL,
               `external_item_type` VARCHAR(20) NOT NULL,
               `external_url` VARCHAR(300) COLLATE 'utf8mb3_unicode_ci' NULL DEFAULT NULL,
-              `external_service_id` INT NOT NULL,
               `external_year_released` INT NULL,
-              `external_category_id` INT NOT NULL,
               PRIMARY KEY (`external_item_id`),
-              INDEX `fk_external_item_external_service1_idx` (`external_service_id` ASC) VISIBLE,
-              INDEX `fk_external_item_category1_idx` (`external_category_id` ASC) VISIBLE,
-              CONSTRAINT `fk_external_item_external_service1`
-              FOREIGN KEY (`external_service_id`)
-              REFERENCES `${environment-schema}`.`external_service` (`external_service_id`),
+              INDEX `fk_external_item_category1_idx` (`external_service_id` ASC, `external_category_id` ASC) VISIBLE,
               CONSTRAINT `fk_external_item_category1`
-              FOREIGN KEY (`external_category_id`)
-              REFERENCES `${environment-schema}`.`category` (`category_id`)
+              FOREIGN KEY (`external_service_id` , `external_category_id`)
+              REFERENCES `${environment-schema}`.`category` (`external_service_id` , `external_category_id`)
               ON DELETE NO ACTION
               ON UPDATE NO ACTION)
               ENGINE = InnoDB;
@@ -665,6 +665,80 @@ databaseChangeLog:
               CONSTRAINT `fk_transaction_cost_transactions1`
               FOREIGN KEY (`transaction_id`)
               REFERENCES `${environment-schema}`.`transactions` (`transaction_id`)
+              ON DELETE NO ACTION
+              ON UPDATE NO ACTION)
+              ENGINE = InnoDB;
+              
+              
+              -- -----------------------------------------------------
+              -- Table `${environment-schema}`.`shedlock`
+              -- -----------------------------------------------------
+              DROP TABLE IF EXISTS `${environment-schema}`.`shedlock` ;
+              
+              CREATE TABLE IF NOT EXISTS `${environment-schema}`.`shedlock` (
+              `name` VARCHAR(64) NOT NULL,
+              `lock_until` TIMESTAMP(3) NOT NULL,
+              `locked_at` TIMESTAMP(3) NOT NULL,
+              `locked_by` VARCHAR(255) NOT NULL,
+              PRIMARY KEY (`name`))
+              ENGINE = InnoDB;
+              
+              
+              -- -----------------------------------------------------
+              -- Table `${environment-schema}`.`item_inventory_photo`
+              -- -----------------------------------------------------
+              DROP TABLE IF EXISTS `${environment-schema}`.`item_inventory_photo` ;
+              
+              CREATE TABLE IF NOT EXISTS `${environment-schema}`.`item_inventory_photo` (
+              `item_inventory_photo_id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+              `item_inventory_uuid` CHAR(36) NOT NULL,
+              `s3_key` VARCHAR(500) NOT NULL,
+              `filename` VARCHAR(255) NOT NULL,
+              `caption` VARCHAR(1024) NULL DEFAULT NULL,
+              `status` ENUM('UPLOADED', 'PROCESSED', 'FAILED') NOT NULL DEFAULT 'UPLOADED',
+              `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+              `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+              `uploaded_at` TIMESTAMP NULL DEFAULT NULL,
+              `is_primary` TINYINT NOT NULL DEFAULT FALSE,
+              `md5` CHAR(32) NULL DEFAULT NULL,
+              `metadata` JSON NULL DEFAULT NULL,
+              PRIMARY KEY (`item_inventory_photo_id`),
+              UNIQUE INDEX `uq_item_service_key` (`item_inventory_uuid` ASC, `s3_key` ASC) VISIBLE,
+              CONSTRAINT `fk_item_inventory_photo_item_inventory1`
+              FOREIGN KEY (`item_inventory_uuid`)
+              REFERENCES `${environment-schema}`.`item_inventory` (`uuid`)
+              ON DELETE NO ACTION
+              ON UPDATE NO ACTION)
+              ENGINE = InnoDB;
+              
+              
+              -- -----------------------------------------------------
+              -- Table `${environment-schema}`.`item_inventory_photo_publication`
+              -- -----------------------------------------------------
+              DROP TABLE IF EXISTS `${environment-schema}`.`item_inventory_photo_publication` ;
+              
+              CREATE TABLE IF NOT EXISTS `${environment-schema}`.`item_inventory_photo_publication` (
+              `item_inventory_photo_publication_id` BIGINT NOT NULL,
+              `item_inventory_photo_id` BIGINT UNSIGNED NOT NULL,
+              `external_service_id` INT NOT NULL,
+              `remote_photo_id` VARCHAR(255) NULL,
+              `remote_album_id` VARCHAR(255) NULL,
+              `public_url` VARCHAR(1024) NULL,
+              `status` ENUM('PENDING', 'PUBLISHED', 'FAILED') NULL DEFAULT 'PENDING',
+              `error_message` TEXT NULL,
+              `published_at` TIMESTAMP NULL,
+              `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+              PRIMARY KEY (`item_inventory_photo_publication_id`),
+              INDEX `fk_item_inventory_photo_publication_external_service1_idx` (`external_service_id` ASC) VISIBLE,
+              INDEX `fk_item_inventory_photo_publication_item_inventory_photo1_idx` (`item_inventory_photo_id` ASC) VISIBLE,
+              CONSTRAINT `fk_item_inventory_photo_publication_external_service1`
+              FOREIGN KEY (`external_service_id`)
+              REFERENCES `${environment-schema}`.`external_service` (`external_service_id`)
+              ON DELETE NO ACTION
+              ON UPDATE NO ACTION,
+              CONSTRAINT `fk_item_inventory_photo_publication_item_inventory_photo1`
+              FOREIGN KEY (`item_inventory_photo_id`)
+              REFERENCES `${environment-schema}`.`item_inventory_photo` (`item_inventory_photo_id`)
               ON DELETE NO ACTION
               ON UPDATE NO ACTION)
               ENGINE = InnoDB;

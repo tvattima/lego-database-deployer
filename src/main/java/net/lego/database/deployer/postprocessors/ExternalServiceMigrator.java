@@ -82,6 +82,12 @@ public class ExternalServiceMigrator implements PostProcessor {
                         .externalServiceName("Brick Model Railroader")
                         .externalServiceUrl("https://brickmodelrailroader.com")
                         .externalServiceTypeId(getExternalServiceTypeId("THIRDPARTY"))
+                        .build(),
+                ExternalService.builder()
+                        .externalServiceId(9)
+                        .externalServiceName("Rebrickable")
+                        .externalServiceUrl("https://rebrickable.com")
+                        .externalServiceTypeId(getExternalServiceTypeId("MARKETPLACE"))
                         .build()
         );
     }

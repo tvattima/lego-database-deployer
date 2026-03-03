@@ -1,11 +1,11 @@
 spring:
   config:
-    import: file:${import-path}/database/database-configuration.yml
+    import: file:${import-path}/database-configuration.yml
   datasource:
-    database-key-name: rasppi5-01-lego-sandbox
+    database-key-name: rasppi5-01-lego-prod-legacy
     hikari:
-      connection-timeout: 10000
-      idle-timeout: 30000
+      connection-timeout: 12345
+      idle-timeout: 34567
       connection-test-query: SELECT 1
       initialization-fail-timeout: 10000
       auto-commit: false
@@ -13,7 +13,7 @@ spring:
       minimum-idle: 10
       maximum-pool-size: 10
       validation-timeout: 10000
-      pool-name: rasppi5-01-mysql-jdbc-pool
+      pool-name: rasppi5-01-lego-prod-legacy-jdbc-pool
   liquibase:
     parameters:
       environment-schema: lego_sandbox
@@ -21,5 +21,16 @@ spring:
 target-database:
   datasource:
     database-key-name: rasppi5-01-lego-sandbox
+    hikari:
+      connection-timeout: 2345
+      idle-timeout: 3456
+      connection-test-query: SELECT 1
+      initialization-fail-timeout: 10000
+      auto-commit: false
+      login-timeout: 10000
+      minimum-idle: 5
+      maximum-pool-size: 5
+      validation-timeout: 300000
+      pool-name: rasppi5-01-lego-sandbox-jdbc-pool
 
 debug: true

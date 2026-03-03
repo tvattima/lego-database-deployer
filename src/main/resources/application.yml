@@ -5,36 +5,10 @@ spring:
     enabled: false
   application:
     name: Lego Database DB Deployer
-  datasource:
-    hikari:
-      connection-timeout: 10000
-      idle-timeout: 30000
-      connection-test-query: SELECT 1
-      initialization-fail-timeout: 10000
-      auto-commit: false
-      login-timeout: 10000
-      minimum-idle: 30
-      maximum-pool-size: 30
-      validation-timeout: 10000
-      pool-name: source-mysql-jdbc-pool
   main:
     web-application-type: none
   config:
-    import: file:${import-path}/bricklink/bricklink-client-api-keys.yml, file:${import-path}/bricklink/bricklink-web.yml
-
-target-database:
-  datasource:
-    hikari:
-      connection-timeout: 10000
-      idle-timeout: 30000
-      connection-test-query: SELECT 1
-      initialization-fail-timeout: 10000
-      auto-commit: false
-      login-timeout: 10000
-      minimum-idle: 5
-      maximum-pool-size: 5
-      validation-timeout: 300000
-      pool-name: target-mysql-jdbc-pool
+    import: file:${import-path}/bricklink-client-api-keys.yml, file:${import-path}/bricklink-web.yml
 
 bricklink:
   rest:
@@ -73,7 +47,7 @@ postprocessors:
       - ExternalServiceMigrator
       - InventoryIndexMigrator
       - ItemMigrator
-      - BricklinkExternalItemMigrator
+      # - BricklinkExternalItemMigrator
       - BricklinkExternalServiceItemMigrator
       - ItemInventoryMigrator
       - ExternalItemInventoryMigrator

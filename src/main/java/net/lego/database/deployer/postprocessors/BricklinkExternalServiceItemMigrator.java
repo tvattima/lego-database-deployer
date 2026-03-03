@@ -18,6 +18,8 @@ import java.util.Optional;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static net.lego.data.v2.dto.ExternalService.ExternalServiceType.BRICKLINK;
+
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -80,7 +82,7 @@ public class BricklinkExternalServiceItemMigrator implements PostProcessor {
         public String call() throws Exception {
             Optional<Item> internalItem = itemDao.findByItemId(bricklinkItem.getItemId());
             internalItem.ifPresentOrElse(item -> {
-                Optional<ExternalItem> externalitem = externalItemDao.findByExternalUniqueId(bricklinkItem.getBlItemId());
+                Optional<ExternalItem> externalitem = externalItemDao.findByExternalNumber(BRICKLINK.getExternalServiceId(), bricklinkItem.getBlItemNumber());
                 externalitem.ifPresentOrElse(externalItem -> {
                     if (externalServiceItemDao.findByExternalItemIdAndItemId(externalItem.getItemId(), bricklinkItem.getItemId()).isEmpty()) {
                         try {
@@ -93,7 +95,7 @@ public class BricklinkExternalServiceItemMigrator implements PostProcessor {
                         }
                     }
                 }, () -> {
-                    log.warn("External Item Id for Item Id {} was not found", bricklinkItem.getItemId());
+                    log.warn("External Item Number for Bricklink Item Number {} was not found", bricklinkItem.getBlItemNumber());
                 });
             }, () -> {
                 log.warn("Item Id {} was not found", bricklinkItem.getItemId());
