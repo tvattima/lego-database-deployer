@@ -19,6 +19,8 @@ import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
+import static net.lego.data.v2.dto.ExternalService.ExternalServiceType.BRICKLINK;
+
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -152,7 +154,7 @@ public class BricklinkExternalItemMigrator implements PostProcessor {
         @Override
         public String call() throws Exception {
             final AtomicLong externalUniqueId = new AtomicLong(0);
-            externalItemDao.findByExternalNumber(catalogItem.getItemId()).ifPresentOrElse(externalItem -> {
+            externalItemDao.findByExternalNumber(BRICKLINK.getExternalServiceId(), catalogItem.getItemId()).ifPresentOrElse(externalItem -> {
                 externalUniqueId.set(externalItem.getUniqueId());
                 if ((externalUniqueId.get() == 0L) || (!catalogItem.getItemId().equals(externalItem.getNumber()))) {
                     externalUniqueId.set(lookupBricklinkInternalItemId(catalogItem.getItemId(), externalItemType));

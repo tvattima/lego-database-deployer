@@ -11,6 +11,8 @@ import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
 
+import static net.lego.data.v2.dto.ExternalService.ExternalServiceType.BRICKLINK;
+
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -30,14 +32,14 @@ public class BricklinkItemInventoryMigrator implements PostProcessor {
         List<BricklinkInventory> bricklinkInventoryList = bricklinkInventoryDaoV1.findAll();
 
         PercentCompleteTabulator percentCompleteTabulator = new PercentCompleteTabulator(bricklinkInventoryList.size(), 1.0d, d -> {
-            log.info("percent completed %4.1f".formatted(d*100));
+            log.info("percent completed %4.1f".formatted(d * 100));
         });
 
         bricklinkInventoryList
                 .forEach(bricklinkInventory -> {
                     Optional<InventoryIndex> inventoryIndex = inventoryIndexDao.findByBoxIdAndBoxIndex(bricklinkInventory.getBoxId(), bricklinkInventory.getBoxIndex());
                     inventoryIndex.ifPresentOrElse(invIdx -> {
-                        Optional<ExternalItem> externalItem = externalItemDao.findByExternalNumber(bricklinkInventory.getBlItemNo());
+                        Optional<ExternalItem> externalItem = externalItemDao.findByExternalNumber(BRICKLINK.getExternalServiceId(), bricklinkInventory.getBlItemNo());
                         externalItem.ifPresentOrElse(ei -> {
                             ItemInventory itemInventory = itemInventoryDao.findByUuid(bricklinkInventory.getUuid())
                                     .orElseThrow(() -> new RuntimeException("Unable to find item inventory for uuid [%s]".formatted(bricklinkInventory.getUuid())));

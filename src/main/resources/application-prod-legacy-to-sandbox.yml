@@ -33,4 +33,3 @@ target-database:
       validation-timeout: 300000
       pool-name: rasppi5-01-lego-sandbox-jdbc-pool
 
-debug: true

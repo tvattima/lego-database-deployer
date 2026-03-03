@@ -9,6 +9,8 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+import static net.lego.data.v2.dto.ExternalService.ExternalServiceType.BRICKLINK;
+
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -28,7 +30,7 @@ public class CategoryMigrator implements PostProcessor {
         categoryDaoV1.findAll()
                 .forEach(c -> {
                     log.info("Category [{}]", c);
-                    categoryDao.findCategoryById(c.getCategoryId())
+                    categoryDao.findCategoryByExternalServiceAndCategoryId(BRICKLINK.getExternalServiceId(), c.getCategoryId())
                             .ifPresentOrElse(category -> {
                                         log.info("Updating existing Category [{}] to [{}]", category, c);
                                         categoryDao.update(Category.builder()
@@ -37,15 +39,15 @@ public class CategoryMigrator implements PostProcessor {
                                                 .build());
                                     },
                                     () -> categoryDao.insert(Category.builder()
-                                            .categoryId(c.getCategoryId())
+                                            .externalCategoryId(c.getCategoryId())
                                             .categoryName(c.getCategoryName())
                                             .parentId(0)
                                             .build()));
                     percentCompleteTabulator.incrementPercentComplete();
                 });
-        if (categoryDao.findCategoryById(0).isEmpty()) {
+        if (categoryDao.findCategoryByExternalServiceAndCategoryId(BRICKLINK.getExternalServiceId(), 0).isEmpty()) {
             categoryDao.insert(Category.builder()
-                    .categoryId(0)
+                    .externalCategoryId(0)
                     .categoryName("UNKNOWN")
                     .parentId(0)
                     .build());
@@ -58,16 +60,16 @@ public class CategoryMigrator implements PostProcessor {
         });
 
         bricklinkCategoryList.forEach(bc -> {
-            categoryDao.findCategoryById(bc.getCategory_id())
+            categoryDao.findCategoryByExternalServiceAndCategoryId(BRICKLINK.getExternalServiceId(), bc.getCategory_id())
                     .ifPresentOrElse(existingCategory -> {
                                 categoryDao.update(Category.builder()
-                                        .categoryId(existingCategory.getCategoryId())
+                                        .externalCategoryId(existingCategory.getExternalCategoryId())
                                         .categoryName(bc.getCategory_name())
                                         .parentId(bc.getParent_id())
                                         .build());
                             },
                             () -> categoryDao.insert(Category.builder()
-                                    .categoryId(bc.getCategory_id())
+                                    .externalCategoryId(bc.getCategory_id())
                                     .categoryName(bc.getCategory_name())
                                     .parentId(bc.getParent_id())
                                     .build()));
