@@ -1,25 +1,24 @@
 package net.lego.database.deployer.config;
 
-import net.lego.database.deployer.liquibase.LiquibasePostProcessor;
-import net.lego.database.deployer.postprocessors.PostProcessor;
 import liquibase.integration.spring.SpringLiquibase;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.liquibase.LiquibaseProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.DependsOn;
 
 import javax.sql.DataSource;
-import java.util.List;
 
-@Slf4j
 @Configuration
-@EnableConfigurationProperties({PostProcessorProperties.class, LiquibaseProperties.class})
+@EnableConfigurationProperties(LiquibaseProperties.class)
 public class LiquibaseConfiguration {
+    private static final Logger log = LoggerFactory.getLogger(LiquibaseConfiguration.class);
 
     @Bean
+    @ConditionalOnProperty(prefix = "spring.liquibase", name = "enabled", havingValue = "true", matchIfMissing = true)
     public SpringLiquibase liquibase(@Qualifier("targetDataSource") final DataSource targetDataSource, final LiquibaseProperties liquibaseProperties) throws Exception {
         log.info("Configuring Liquibase with DataSource [{}]", targetDataSource.getConnection().getMetaData().getURL());
         log.info("Liquibase parameters [{}]", liquibaseProperties.getParameters());
@@ -31,11 +30,5 @@ public class LiquibaseConfiguration {
         liquibase.setChangeLogParameters(liquibaseProperties.getParameters());
         liquibase.setChangeLog("classpath:/db/changelog/db.changelog-master.yaml");
         return liquibase;
-    }
-
-    @Bean
-    @DependsOn("liquibase")
-    public LiquibasePostProcessor liquibasePostProcessor(final SpringLiquibase springLiquibase, final List<PostProcessor> postProcessors, final PostProcessorProperties postProcessorProperties, @Qualifier("dataSource") final DataSource dataSource, @Qualifier("targetDataSource") final DataSource targetDataSource) {
-        return new LiquibasePostProcessor(postProcessors, postProcessorProperties, dataSource, targetDataSource);
     }
 }

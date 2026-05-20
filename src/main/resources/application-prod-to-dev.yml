@@ -1,6 +1,4 @@
 spring:
-  datasource:
-    database-key-name: site5-dev-lego
   liquibase:
     parameters:
       environment-schema: lego_dev
