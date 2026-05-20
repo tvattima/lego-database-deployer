@@ -8,47 +8,8 @@ spring:
   main:
     web-application-type: none
   config:
-    import: file:${import-path}/bricklink-client-api-keys.yml, file:${import-path}/bricklink-web.yml
-
-bricklink:
-  rest:
-    uri: https://api.bricklink.com/api/store/v1
-  web:
-    pool:
-      default-max-per-route: 20
-      max-per-route: 20
-      max-total: 50
-    urls:
-      login-logout: "https://www.bricklink.com/ajax/renovate/loginandout.ajax"
-      imgAdd: "https://www.bricklink.com/imgAdd.asp"
-      inventoryDetail: "https://www.bricklink.com/inventory_detail.asp"
-      inventoryUpdate: "https://www.bricklink.com/inventory_detail.asp"
-      wantedListDownload: "https://www.bricklink.com/files/clone/wanted/downloadXML.file"
-      catalogDownload: "https://www.bricklink.com/catalogDownload.asp?a=a"
+    import: optional:file:${import-path}/database-configuration.yml
 
 logging:
   level:
     root: INFO
-    org.apache.hc.client5.http.protocol: ERROR
-
-postprocessors:
-  groups:
-    migration-1.0-to-2.0:
-      - InitialMigrationPostProcessor
-      # - CategoryMigrator
-      - ConditionMigrator
-      - TransactionTypeMigrator
-      - CarrierMigrator
-      - TransactionPlatformMigrator
-      - CostTypeMigrator
-      - PartyMigrator
-      - PaymentPlatformMigrator
-      - ExternalServiceTypeMigrator
-      - ExternalServiceMigrator
-      - InventoryIndexMigrator
-      - ItemMigrator
-      # - BricklinkExternalItemMigrator
-      - BricklinkExternalServiceItemMigrator
-      - ItemInventoryMigrator
-      - ExternalItemInventoryMigrator
-      - BricklinkItemInventoryMigrator
