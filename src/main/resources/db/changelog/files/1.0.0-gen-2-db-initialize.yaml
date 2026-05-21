@@ -263,27 +263,6 @@ databaseChangeLog:
               
               
               -- -----------------------------------------------------
-              -- Table `${environment-schema}`.`external_service_item`
-              -- -----------------------------------------------------
-              DROP TABLE IF EXISTS `${environment-schema}`.`external_service_item` ;
-              
-              CREATE TABLE IF NOT EXISTS `${environment-schema}`.`external_service_item` (
-              `external_item_id` INT NOT NULL,
-              `item_inventory_id` INT NOT NULL,
-              INDEX `fk_external_service_item_external_item1_idx` (`external_item_id` ASC) VISIBLE,
-              INDEX `fk_external_service_item_item_inventory1_idx` (`item_inventory_id` ASC) VISIBLE,
-              CONSTRAINT `fk_external_service_item_external_item1`
-              FOREIGN KEY (`external_item_id`)
-              REFERENCES `${environment-schema}`.`external_item` (`external_item_id`),
-              CONSTRAINT `fk_external_service_item_item_inventory1`
-              FOREIGN KEY (`item_inventory_id`)
-              REFERENCES `${environment-schema}`.`item_inventory` (`item_inventory_id`)
-              ON DELETE NO ACTION
-              ON UPDATE NO ACTION)
-              ENGINE = InnoDB;
-              
-              
-              -- -----------------------------------------------------
               -- Table `${environment-schema}`.`inventory_index`
               -- -----------------------------------------------------
               DROP TABLE IF EXISTS `${environment-schema}`.`inventory_index` ;
