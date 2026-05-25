@@ -11,7 +11,7 @@ databaseChangeLog:
               SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
               SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
               SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO,ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
-              
+
               -- -----------------------------------------------------
               -- Schema ${environment-schema}
               -- -----------------------------------------------------
@@ -75,26 +75,26 @@ databaseChangeLog:
               INDEX `instructions_condition_id_fk_1` (`instructions_condition_id` ASC) VISIBLE)
               ENGINE = InnoDB
               AUTO_INCREMENT = 936;
-              
-              
+
+
               -- -----------------------------------------------------
               -- Table `${environment-schema}`.`external_service_type`
               -- -----------------------------------------------------
               DROP TABLE IF EXISTS `${environment-schema}`.`external_service_type` ;
-              
+
               CREATE TABLE IF NOT EXISTS `${environment-schema}`.`external_service_type` (
               `external_service_type_id` INT NOT NULL,
               `external_service_type_name` VARCHAR(20) COLLATE 'utf8mb3_unicode_ci' NOT NULL,
               `external_service_type_description` VARCHAR(100) COLLATE 'utf8mb3_unicode_ci' NULL DEFAULT NULL,
               PRIMARY KEY (`external_service_type_id`))
               ENGINE = InnoDB;
-              
-              
+
+
               -- -----------------------------------------------------
               -- Table `${environment-schema}`.`external_service`
               -- -----------------------------------------------------
               DROP TABLE IF EXISTS `${environment-schema}`.`external_service` ;
-              
+
               CREATE TABLE IF NOT EXISTS `${environment-schema}`.`external_service` (
               `external_service_id` INT NOT NULL,
               `external_service_name` VARCHAR(50) COLLATE 'utf8mb3_unicode_ci' NOT NULL,
@@ -227,6 +227,27 @@ databaseChangeLog:
               
               
               -- -----------------------------------------------------
+              -- Table `${environment-schema}`.`inventory_index`
+              -- -----------------------------------------------------
+              DROP TABLE IF EXISTS `${environment-schema}`.`inventory_index` ;
+
+              CREATE TABLE IF NOT EXISTS `${environment-schema}`.`inventory_index` (
+              `box_id` INT NOT NULL DEFAULT '0',
+              `box_index` INT NOT NULL DEFAULT '0',
+              `item_number` VARCHAR(15) COLLATE 'utf8mb3_unicode_ci' NOT NULL,
+              `box_name` VARCHAR(20) COLLATE 'utf8mb3_unicode_ci' NULL DEFAULT NULL,
+              `box_number` VARCHAR(10) COLLATE 'utf8mb3_unicode_ci' NOT NULL,
+              `sealed` VARCHAR(5) COLLATE 'utf8mb3_unicode_ci' NULL DEFAULT NULL,
+              `quantity` INT NULL DEFAULT NULL,
+              `description` TEXT COLLATE 'utf8mb3_unicode_ci' NULL DEFAULT NULL,
+              `active` TINYINT(1) NULL DEFAULT '1',
+              `moved_to_box_id` INT NULL DEFAULT NULL,
+              PRIMARY KEY (`box_id`, `box_index`),
+              INDEX `inventory_index__index_1` (`box_id` ASC, `box_index` ASC) VISIBLE)
+              ENGINE = InnoDB;
+
+
+              -- -----------------------------------------------------
               -- Table `${environment-schema}`.`item_inventory`
               -- -----------------------------------------------------
               DROP TABLE IF EXISTS `${environment-schema}`.`item_inventory` ;
@@ -259,27 +280,6 @@ databaseChangeLog:
               REFERENCES `${environment-schema}`.`condition` (`condition_id`)
               ON DELETE NO ACTION
               ON UPDATE NO ACTION)
-              ENGINE = InnoDB;
-              
-              
-              -- -----------------------------------------------------
-              -- Table `${environment-schema}`.`inventory_index`
-              -- -----------------------------------------------------
-              DROP TABLE IF EXISTS `${environment-schema}`.`inventory_index` ;
-              
-              CREATE TABLE IF NOT EXISTS `${environment-schema}`.`inventory_index` (
-              `box_id` INT NOT NULL DEFAULT '0',
-              `box_index` INT NOT NULL DEFAULT '0',
-              `item_number` VARCHAR(15) COLLATE 'utf8mb3_unicode_ci' NOT NULL,
-              `box_name` VARCHAR(20) COLLATE 'utf8mb3_unicode_ci' NULL DEFAULT NULL,
-              `box_number` VARCHAR(10) COLLATE 'utf8mb3_unicode_ci' NOT NULL,
-              `sealed` VARCHAR(5) COLLATE 'utf8mb3_unicode_ci' NULL DEFAULT NULL,
-              `quantity` INT NULL DEFAULT NULL,
-              `description` TEXT COLLATE 'utf8mb3_unicode_ci' NULL DEFAULT NULL,
-              `active` TINYINT(1) NULL DEFAULT '1',
-              `moved_to_box_id` INT NULL DEFAULT NULL,
-              PRIMARY KEY (`box_id`, `box_index`),
-              INDEX `inventory_index__index_1` (`box_id` ASC, `box_index` ASC) VISIBLE)
               ENGINE = InnoDB;
               
               
@@ -525,7 +525,7 @@ databaseChangeLog:
               CREATE TABLE IF NOT EXISTS `${environment-schema}`.`external_item_inventory` (
               `external_item_id` INT NOT NULL,
               `item_inventory_id` INT NOT NULL,
-              `fixed_price` TINYINT(1) NOT NULL DEFAULT 1,
+              `fixed_price` TINYINT(1) NULL DEFAULT 1,
               `order_id` VARCHAR(20) COLLATE 'utf8mb3_unicode_ci' NULL DEFAULT NULL,
               `extended_description` VARCHAR(1024) COLLATE 'utf8mb3_unicode_ci' NULL DEFAULT NULL,
               `extra_description` VARCHAR(1024) COLLATE 'utf8mb3_unicode_ci' NULL DEFAULT NULL,
@@ -668,6 +668,7 @@ databaseChangeLog:
               `s3_bucket` VARCHAR(500) NULL,
               `s3_key` VARCHAR(500) NULL,
               `md5` CHAR(32) NULL DEFAULT NULL,
+              `metadata_hash` CHAR(64) NULL DEFAULT NULL,
               `file_name` VARCHAR(255) NOT NULL,
               `file_size` BIGINT NOT NULL,
               `is_primary` TINYINT NOT NULL DEFAULT FALSE,
@@ -737,6 +738,7 @@ databaseChangeLog:
               `title` VARCHAR(500) NOT NULL,
               `image_url` VARCHAR(1024) NULL,
               `md5_at_upload` CHAR(32) NOT NULL,
+              `metadata_hash_at_sync` CHAR(64) NULL DEFAULT NULL,
               `sync_status` ENUM('PENDING', 'SYNCED', 'FAILED', 'DELETE_PENDING') NOT NULL DEFAULT 'PENDING',
               `error_message` TEXT NULL,
               `uploaded_at` TIMESTAMP NULL,
