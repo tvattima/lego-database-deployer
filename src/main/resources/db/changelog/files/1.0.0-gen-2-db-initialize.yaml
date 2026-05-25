@@ -680,6 +680,7 @@ databaseChangeLog:
               PRIMARY KEY (`item_inventory_photo_id`),
               UNIQUE INDEX `uq_item_service_key` (`s3_key` ASC) VISIBLE,
               INDEX `fk_item_inventory_photo_item_inventory1_idx` (`item_inventory_id` ASC) VISIBLE,
+              INDEX `idx_item_inventory_photo_status_inventory` (`status` ASC, `item_inventory_id` ASC) VISIBLE,
               UNIQUE INDEX `md5_UNIQUE` (`md5` ASC) VISIBLE,
               CONSTRAINT `fk_item_inventory_photo_item_inventory1`
               FOREIGN KEY (`item_inventory_id`)
@@ -712,6 +713,7 @@ databaseChangeLog:
               UNIQUE INDEX `uq_external_image_album_service_album` (`external_service_id` ASC, `external_album_id` ASC) VISIBLE,
               INDEX `fk_external_image_album_external_service1_idx` (`external_service_id` ASC) VISIBLE,
               INDEX `fk_external_image_album_item_inventory1_idx` (`item_inventory_id` ASC) VISIBLE,
+              INDEX `idx_external_image_album_service_inventory_status` (`external_service_id` ASC, `item_inventory_id` ASC, `sync_status` ASC) VISIBLE,
               CONSTRAINT `fk_external_image_album_external_service1`
               FOREIGN KEY (`external_service_id`)
               REFERENCES `${environment-schema}`.`external_service` (`external_service_id`)
@@ -750,6 +752,7 @@ databaseChangeLog:
               UNIQUE INDEX `uq_external_image_service_image` (`external_service_id` ASC, `external_service_image_id` ASC) VISIBLE,
               INDEX `fk_external_image_external_service1_idx` (`external_service_id` ASC) VISIBLE,
               INDEX `fk_external_image_item_inventory_photo1_idx` (`item_inventory_photo_id` ASC) VISIBLE,
+              INDEX `idx_external_image_service_photo_status_metadata` (`external_service_id` ASC, `item_inventory_photo_id` ASC, `sync_status` ASC, `metadata_hash_at_sync` ASC) VISIBLE,
               CONSTRAINT `fk_external_image_external_service1`
               FOREIGN KEY (`external_service_id`)
               REFERENCES `${environment-schema}`.`external_service` (`external_service_id`)
