@@ -13,6 +13,10 @@ Deploy this database change after the shared `lego-data` color policy and before
 The change set is included automatically by `db/changelog/db.changelog-master.yaml` through `includeAll`. Confirm
 the repair query is empty before retrying a failed SET request; terminal sync requests require an explicit operator
 reset or recreation through the normal workflow.
+=======
+## Current Schema Notes
+
+- `bricklink_marketplace_listing.stock_room_id` is nullable. Production BrickLink inventory can be publicly visible only when it is not assigned to a stockroom; sandbox and dev guardrails are enforced by application safety checks and configured stockroom values, not by a database `NOT NULL` constraint.
 
 Edit postprocessors in `application.yml`:
 
