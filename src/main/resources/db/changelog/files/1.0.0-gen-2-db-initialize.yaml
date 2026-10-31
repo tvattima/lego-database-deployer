@@ -825,7 +825,7 @@
               `bulk` SMALLINT NULL DEFAULT NULL COMMENT 'BrickLink bulk quantity setting for the listing.',
               `is_retain` TINYINT(1) NOT NULL COMMENT 'BrickLink retain flag indicating whether inventory should be retained after sale behavior.',
               `is_stock_room` TINYINT(1) NOT NULL COMMENT 'BrickLink stock room flag indicating whether the item is hidden in a stock room.',
-              `stock_room_id` VARCHAR(1) COLLATE 'utf8mb3_unicode_ci' NOT NULL COMMENT 'BrickLink stock room identifier, when the listing is assigned to a stock room.',
+              `stock_room_id` VARCHAR(1) COLLATE 'utf8mb3_unicode_ci' NULL DEFAULT NULL COMMENT 'BrickLink stock room identifier, when the listing is assigned to a stock room.',
               `sale_rate` TINYINT NULL DEFAULT NULL COMMENT 'BrickLink sale rate or discount percentage, when configured.',
               `tier_quantity1` SMALLINT NULL DEFAULT NULL COMMENT 'First BrickLink tier price quantity threshold.',
               `tier_price1` DECIMAL(7,2) NULL DEFAULT NULL COMMENT 'First BrickLink tier price amount.',
