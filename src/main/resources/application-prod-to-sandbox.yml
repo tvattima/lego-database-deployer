@@ -6,4 +6,4 @@ spring:
 
 target-database:
   datasource:
-    database-key-name: legolandserver1-lego-sandbox
+    database-key-name: rasppi5-01-lego-sandbox
